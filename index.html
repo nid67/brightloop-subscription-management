@@ -6,7 +6,7 @@
     <title>Brightloop Software – Subscription Management & Revenue Operations</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/src/styles/styles.css" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23635BFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='m8 12 3 3 5-5'/></svg>" />
   </head>
@@ -1237,61 +1237,333 @@
             <div class="page-header">
               <div class="page-title">
                 <h2 id="portal-header-title">Customer Self-Service Portal</h2>
-                <p id="portal-header-sub">Dedicated subscriber dashboard to view active subscriptions, billing schedules, and download invoices</p>
+                <p id="portal-header-sub">Dedicated subscriber dashboard to view active subscriptions, authorized cloud workloads, and download GST tax invoices</p>
               </div>
-              <div class="header-actions">
-                <span class="badge badge-success" id="portal-account-badge"><i data-lucide="check-circle" style="width: 12px; height: 12px;"></i> Active Subscriber</span>
+              <div class="header-actions" style="display: flex; gap: 10px; align-items: center;">
+                <span class="badge badge-success" id="portal-account-badge"><i data-lucide="check-circle" style="width: 13px; height: 13px;"></i> Active Subscriber</span>
+                <button class="btn btn-secondary btn-sm" id="portal-refresh-btn"><i data-lucide="refresh-cw"></i> Refresh Data</button>
               </div>
             </div>
 
             <!-- Company Profile Banner -->
-            <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(99, 91, 255, 0.05) 0%, rgba(10, 37, 64, 0.03) 100%); border-left: 4px solid var(--primary);">
-              <div class="card-body" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
-                <div>
-                  <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--primary); letter-spacing: 0.5px;">Authorized Company Profile</div>
-                  <div id="portal-company-name" style="font-size: 20px; font-weight: 700; color: var(--text-main); margin-top: 2px;">Acme Tech Solutions</div>
-                  <div id="portal-contact-info" style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">
-                    <span id="portal-contact-name">Alex Sharma</span> &bull; <span id="portal-contact-email">alex@acme.com</span>
+            <div class="portal-profile-banner">
+              <div class="portal-profile-identity">
+                <div class="portal-profile-avatar" id="portal-banner-avatar">SI</div>
+                <div class="portal-profile-meta">
+                  <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--primary); letter-spacing: 0.5px;">Authorized Subscriber Profile</div>
+                  <h3 id="portal-banner-company">STARK Industries</h3>
+                  <p id="portal-banner-user">Praveen M (praveenmpt296@gmail.com)</p>
+                  <p id="portal-banner-gstin" class="mono-text" style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">GSTIN: 27AABCS9821R1Z8</p>
+                </div>
+              </div>
+              <div class="portal-profile-summary-pills">
+                <div class="portal-summary-pill">
+                  <div class="label">Active Tier</div>
+                  <div class="val" id="portal-banner-sub-name" style="color: var(--primary);">Enterprise Annual Tier</div>
+                </div>
+                <div class="portal-summary-pill">
+                  <div class="label">Next Billing</div>
+                  <div class="val" id="portal-banner-next-billing">30 Nov 2026</div>
+                </div>
+                <div class="portal-summary-pill">
+                  <div class="label">Cadence</div>
+                  <div class="val" id="portal-banner-sub-count">1 Plan (Active)</div>
+                </div>
+                <div class="portal-summary-pill">
+                  <div class="label">Cloud SLA</div>
+                  <div class="val" style="color: var(--success); font-size: 13px;">99.98% Active</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top 4 KPI Metrics -->
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-header">
+                  <span class="kpi-label">Active Contract</span>
+                  <i data-lucide="layers" class="kpi-icon" style="color: var(--primary);"></i>
+                </div>
+                <div class="kpi-value" id="portal-kpi-plan-name">Enterprise Annual Tier</div>
+                <div class="kpi-trend" id="portal-kpi-sub-code" style="color: var(--text-muted);">
+                  <span class="mono-text">SUB-8235</span> &bull; Idempotent
+                </div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-header">
+                  <span class="kpi-label">Next Scheduled Renewal</span>
+                  <i data-lucide="calendar" class="kpi-icon" style="color: var(--success);"></i>
+                </div>
+                <div class="kpi-value" id="portal-kpi-renewal-date">30 Nov 2026</div>
+                <div class="kpi-trend" style="color: var(--success);">
+                  <i data-lucide="check" style="width: 12px; height: 12px;"></i> Auto-Renew Active (30d Grace)
+                </div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-header">
+                  <span class="kpi-label">Recurring Billing Amount</span>
+                  <i data-lucide="credit-card" class="kpi-icon" style="color: var(--primary);"></i>
+                </div>
+                <div class="kpi-value" id="portal-kpi-price-amount">₹ 49,999</div>
+                <div class="kpi-trend" style="color: var(--text-muted);">
+                  Dual-GST (9% CGST + 9% SGST Included)
+                </div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-header">
+                  <span class="kpi-label">Authorized Workloads</span>
+                  <i data-lucide="shield-check" class="kpi-icon" style="color: var(--success);"></i>
+                </div>
+                <div class="kpi-value" style="color: var(--success);">5 / 5 Operational</div>
+                <div class="kpi-trend" style="color: var(--text-muted);">
+                  All enterprise engines authorized & live
+                </div>
+              </div>
+            </div>
+
+            <!-- Portal Tabs Header -->
+            <div class="portal-tabs-nav">
+              <button class="portal-tab-btn active" data-portal-tab="subscriptions">
+                <i data-lucide="repeat"></i> Active Subscriptions
+              </button>
+              <button class="portal-tab-btn" data-portal-tab="services">
+                <i data-lucide="cpu"></i> Authorized Cloud Work & Services
+              </button>
+              <button class="portal-tab-btn" data-portal-tab="invoices">
+                <i data-lucide="receipt"></i> Invoices & Receipts
+              </button>
+              <button class="portal-tab-btn" data-portal-tab="requests">
+                <i data-lucide="clock"></i> Service Requests
+              </button>
+              <button class="portal-tab-btn" data-portal-tab="profile">
+                <i data-lucide="building"></i> Company & Tax Profile
+              </button>
+            </div>
+
+            <!-- TAB 1: ACTIVE SUBSCRIPTIONS PANE -->
+            <div class="portal-tab-pane active" id="portal-pane-subscriptions">
+              <div id="portal-subscriptions-list">
+                <!-- Dynamically rendered by renderPortalSubscriptions() -->
+              </div>
+            </div>
+
+            <!-- TAB 2: AUTHORIZED CLOUD WORK & SERVICES PANE -->
+            <div class="portal-tab-pane" id="portal-pane-services">
+              <div class="card" style="margin-bottom: 24px;">
+                <div class="card-header">
+                  <div>
+                    <div class="card-title">Authorized Workloads & Cloud Capabilities</div>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">
+                      Active enterprise services, processing engines, and API allocations authorized for your subscriber tier
+                    </div>
+                  </div>
+                  <span class="badge badge-success"><i data-lucide="check" style="width: 12px; height: 12px;"></i> All Systems Operational</span>
+                </div>
+                <div class="card-body">
+                  <div class="grid-2">
+                    <!-- Service 1 -->
+                    <div style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px; background: #ffffff;">
+                      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                          <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(99, 91, 255, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="receipt"></i>
+                          </div>
+                          <div>
+                            <div style="font-weight: 700; font-size: 14px; color: var(--text-main);">Automated Recurring Invoicing Engine</div>
+                            <div style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">HSN/SAC Code: 998313</div>
+                          </div>
+                        </div>
+                        <span class="badge badge-success">Authorized & Active</span>
+                      </div>
+                      <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
+                        Continuous automated invoice generation with dual CGST (9%) + SGST (9%) tax ledgering, digital audit tokens, and automated customer dispatch.
+                      </p>
+                      <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border-subtle); padding-top: 8px;">
+                        <span>Entitlement: Unlimited Invoice Runs</span>
+                        <span style="color: var(--success); font-weight: 600;">100% Tax Compliant</span>
+                      </div>
+                    </div>
+
+                    <!-- Service 2 -->
+                    <div style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px; background: #ffffff;">
+                      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                          <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(0, 217, 36, 0.1); color: var(--success); display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="shield-alert"></i>
+                          </div>
+                          <div>
+                            <div style="font-weight: 700; font-size: 14px; color: var(--text-main);">Revenue Leakage Sentinel</div>
+                            <div style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">Autonomous Anomaly Detector</div>
+                          </div>
+                        </div>
+                        <span class="badge badge-success">Authorized & Active</span>
+                      </div>
+                      <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
+                        24/7 background sentinel monitoring subscription lifecycle transitions, grace period compliance (30 days), failed payment retries, and dunning cadences.
+                      </p>
+                      <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border-subtle); padding-top: 8px;">
+                        <span>Entitlement: 24/7 Background Sentinel</span>
+                        <span style="color: var(--success); font-weight: 600;">Zero Leakage Guarantee</span>
+                      </div>
+                    </div>
+
+                    <!-- Service 3 -->
+                    <div style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px; background: #ffffff;">
+                      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                          <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(99, 91, 255, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="credit-card"></i>
+                          </div>
+                          <div>
+                            <div style="font-weight: 700; font-size: 14px; color: var(--text-main);">Idempotent Payment Gateway</div>
+                            <div style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">Multi-Channel Dispatcher</div>
+                          </div>
+                        </div>
+                        <span class="badge badge-success">Authorized & Active</span>
+                      </div>
+                      <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
+                        Multi-channel payment capture supporting UPI, Corporate Cards, and NetBanking with cryptographic idempotency keys preventing replay attacks.
+                      </p>
+                      <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border-subtle); padding-top: 8px;">
+                        <span>Entitlement: Multi-Channel Gateway</span>
+                        <span style="color: var(--primary); font-weight: 600;">Idempotent Tokenized</span>
+                      </div>
+                    </div>
+
+                    <!-- Service 4 -->
+                    <div style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px; background: #ffffff;">
+                      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                          <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(245, 166, 35, 0.1); color: #f5a623; display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="code-2"></i>
+                          </div>
+                          <div>
+                            <div style="font-weight: 700; font-size: 14px; color: var(--text-main);">Enterprise REST API & Webhooks</div>
+                            <div style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">Production Tier Access</div>
+                          </div>
+                        </div>
+                        <span class="badge badge-success">Authorized & Active</span>
+                      </div>
+                      <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
+                        Programmatic access to query customer accounts, subscription contracts, and download tax invoices via authenticated REST endpoints and webhooks.
+                      </p>
+                      <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border-subtle); padding-top: 8px;">
+                        <span>Quota: 100,000 API calls/month</span>
+                        <span style="color: var(--success); font-weight: 600;">Rate Limit: 250 req/sec</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div style="display: flex; gap: 12px;">
-                  <div style="text-align: right;">
-                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Portal Access Level</div>
-                    <div style="font-size: 13px; font-weight: 600; color: var(--text-main);" id="portal-role-label">Customer Account</div>
+              </div>
+
+              <!-- Enterprise API Credentials Card -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">Production API Access Token</div>
+                  <span class="badge badge-neutral">Production Live</span>
+                </div>
+                <div class="card-body">
+                  <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-page); padding: 14px 18px; border-radius: var(--radius-md); border: 1px solid var(--border); flex-wrap: wrap; gap: 12px;">
+                    <div>
+                      <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Authorized Bearer Token</div>
+                      <div class="mono-text" style="font-size: 13px; font-weight: 600; color: var(--primary); margin-top: 2px;">
+                        bl_live_sec_984f2910a82741bc8235e01
+                      </div>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('bl_live_sec_984f2910a82741bc8235e01'); alert('Production API Token copied to clipboard!');">
+                      <i data-lucide="copy"></i> Copy Token
+                    </button>
+                  </div>
+                  <p style="font-size: 12px; color: var(--text-muted); margin-top: 10px;">
+                    Use this token in the <code>Authorization: Bearer &lt;token&gt;</code> header for server-to-server webhook verification and API queries.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 3: INVOICES & RECEIPTS PANE -->
+            <div class="portal-tab-pane" id="portal-pane-invoices">
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">Tax Invoices & Payment Receipts</div>
+                  <button class="btn btn-secondary btn-sm" id="portal-download-all-invs"><i data-lucide="download"></i> Export All</button>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                  <div class="table-container">
+                    <table class="data-table">
+                      <thead>
+                        <tr>
+                          <th>Invoice #</th>
+                          <th>Issue Date</th>
+                          <th>Due Date</th>
+                          <th>Subtotal</th>
+                          <th>Taxes (Dual-GST)</th>
+                          <th>Total Paid</th>
+                          <th>Status</th>
+                          <th>Receipt</th>
+                        </tr>
+                      </thead>
+                      <tbody id="portal-invoices-body">
+                        <!-- Dynamically populated by renderPortalInvoices() -->
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="grid-2">
+            <!-- TAB 4: SERVICE REQUESTS PANE -->
+            <div class="portal-tab-pane" id="portal-pane-requests">
               <div class="card">
                 <div class="card-header">
-                  <div class="card-title">My Active Subscriptions</div>
-                  <span class="badge badge-success" id="portal-sub-badge">Active</span>
+                  <div class="card-title">Contract Actions & Service Requests</div>
                 </div>
                 <div class="card-body">
-                  <div id="portal-sub-name" style="font-size: 16px; font-weight: 600;">Brightloop Enterprise Cloud</div>
-                  <div id="portal-sub-cycle" style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">Billing cycle: Monthly (Next renewal: 15 Nov 2026)</div>
-                  <div id="portal-sub-price" style="font-size: 20px; font-weight: 700; margin: 12px 0;">₹ 18,500 / month</div>
-                  <div style="display: flex; gap: 10px; margin-top: 14px;">
-                    <button class="btn btn-secondary btn-sm" id="portal-pause-btn">Request Pause</button>
-                    <button class="btn btn-secondary btn-sm" id="portal-cancel-btn" style="color: var(--danger);">Cancel Subscription</button>
+                  <div id="portal-requests-list">
+                    <!-- Dynamically populated by renderPortalRequests() -->
                   </div>
                 </div>
               </div>
+            </div>
 
+            <!-- TAB 5: COMPANY PROFILE PANE -->
+            <div class="portal-tab-pane" id="portal-pane-profile">
               <div class="card">
                 <div class="card-header">
-                  <div class="card-title">Recent Invoices & Receipts</div>
+                  <div class="card-title">Organization & Corporate Billing Details</div>
                 </div>
-                <div class="card-body" id="portal-invoices-container">
-                  <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border);">
-                    <div>
-                      <div class="mono-text" style="font-weight: 600;" id="portal-inv-number">BL-INV-2026-001</div>
-                      <div style="font-size: 12px; color: var(--text-muted);" id="portal-inv-meta">01 Nov 2026 • ₹ 11,800 • Dual-GST Paid</div>
+                <div class="card-body">
+                  <form id="portal-profile-form">
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">Company Legal Name</label>
+                        <input type="text" id="portal-profile-company-input" class="form-input" value="STARK Industries" required />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">GSTIN / Corporate Tax ID</label>
+                        <input type="text" id="portal-profile-gstin-input" class="form-input" value="27AABCS9821R1Z8" required />
+                      </div>
                     </div>
-                    <button class="btn btn-secondary btn-sm" data-modal="invoice-preview-modal"><i data-lucide="download"></i> PDF</button>
-                  </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">Authorized Contact Person</label>
+                        <input type="text" id="portal-profile-name-input" class="form-input" value="Praveen M" required />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Registered Billing Email</label>
+                        <input type="email" id="portal-profile-email-input" class="form-input" value="praveenmpt296@gmail.com" required readonly style="background: var(--bg-page); cursor: not-allowed;" />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Registered Corporate Billing Address</label>
+                      <input type="text" id="portal-profile-address-input" class="form-input" value="Brigade Tech Gardens, Whitefield, Bengaluru, Karnataka 560066" required />
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
+                      <button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Save Organization Details</button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -1399,7 +1671,7 @@
             <form id="auth-login-form">
               <div class="form-group">
                 <label class="form-label">Work Email</label>
-                <input type="email" id="login-email-input" class="form-input" placeholder="admin@brightloop.io" value="admin@brightloop.io" required style="width: 100%;" />
+                <input type="email" id="login-email-input" class="form-input" placeholder="name@company.com" required style="width: 100%;" autocomplete="username" />
               </div>
 
               <div class="form-group">
@@ -1408,7 +1680,7 @@
                   <a href="#" id="link-to-forgot" style="font-size: 12px; color: var(--primary); text-decoration: none;">Forgot password?</a>
                 </div>
                 <div style="position: relative;">
-                  <input type="password" id="login-password-input" class="form-input" placeholder="••••••••••••" value="Brightloop@2026" required style="width: 100%; padding-right: 38px;" />
+                  <input type="password" id="login-password-input" class="form-input" placeholder="Enter your password" required style="width: 100%; padding-right: 38px;" autocomplete="current-password" />
                   <button type="button" id="toggle-password-btn" title="Toggle password visibility" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center;">
                     <i data-lucide="eye" style="width: 15px; height: 15px;"></i>
                   </button>
@@ -1424,6 +1696,13 @@
               <button type="submit" id="login-submit-btn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 9px;">
                 Sign In
               </button>
+
+              <div style="margin-top: 14px; padding: 8px 12px; background: var(--bg-page); border: 1px dashed var(--border); border-radius: var(--radius-sm); font-size: 12px; text-align: center; color: var(--text-muted);">
+                <span>Admin Testing? </span>
+                <button type="button" id="fill-admin-credentials-btn" style="background: none; border: none; color: var(--primary); font-weight: 600; cursor: pointer; padding: 0; text-decoration: underline;">
+                  Auto-fill Admin Credentials
+                </button>
+              </div>
             </form>
 
             <div style="margin-top: 20px; text-align: center; font-size: 13px; color: var(--text-secondary);">
@@ -1835,124 +2114,257 @@
       </div>
     </div>
 
+    <!-- Customer Portal: Early Renewal Modal -->
+    <div id="portal-renew-modal" class="modal-overlay">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title">Confirm Early Subscription Renewal</div>
+          <button class="modal-close" data-close-modal>&times;</button>
+        </div>
+        <form id="portal-renew-form">
+          <div class="modal-body">
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+              Renewing early will immediately extend your contract period by 1 cycle with zero service interruption.
+            </p>
+            <div class="card" style="background: var(--bg-page); border: 1px solid var(--border); padding: 14px; margin-bottom: 16px;">
+              <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Plan To Renew</div>
+              <div id="renew-modal-plan-name" style="font-size: 16px; font-weight: 700; color: var(--text-main); margin-top: 2px;">Enterprise Annual Tier</div>
+              <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 13px;">
+                <span>Renewal Price:</span>
+                <strong id="renew-modal-amount" class="mono-text">₹ 49,999</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-top: 4px; font-size: 13px;">
+                <span>New Valid Until:</span>
+                <strong id="renew-modal-next-date">30 Nov 2026</strong>
+              </div>
+            </div>
+            <div class="info-banner" style="font-size: 12px;">
+              <i data-lucide="shield-check" style="width: 14px; height: 14px; vertical-align: middle;"></i>
+              Idempotent tax invoice will be generated automatically with Dual-GST compliance.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+            <button type="submit" class="btn btn-primary"><i data-lucide="refresh-cw"></i> Confirm Early Renewal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Customer Portal: Pause Request Modal -->
+    <div id="portal-pause-modal" class="modal-overlay">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title">Request Subscription Pause</div>
+          <button class="modal-close" data-close-modal>&times;</button>
+        </div>
+        <form id="portal-pause-form">
+          <div class="modal-body">
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">
+              Temporarily pause billing for <strong id="pause-modal-plan-name">Enterprise Annual Tier</strong> while preserving your account settings and cloud workspaces.
+            </p>
+            <div class="form-group">
+              <label class="form-label">Pause Duration</label>
+              <select id="pause-duration-select" class="form-select" style="width: 100%;">
+                <option value="15 days">15 Days (Short Operational Pause)</option>
+                <option value="30 days" selected>30 Days (Standard 1-Month Pause)</option>
+                <option value="60 days">60 Days (Extended Seasonality Pause)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Reason for Request (Optional)</label>
+              <input type="text" id="pause-reason-input" class="form-input" placeholder="e.g. Seasonal company shutdown or migration" style="width: 100%;" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-close-modal>Back</button>
+            <button type="submit" class="btn btn-primary"><i data-lucide="pause"></i> Submit Pause Request</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Customer Portal: Cancellation Request Modal -->
+    <div id="portal-cancel-modal" class="modal-overlay">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title">Cancel Subscription Auto-Renewal</div>
+          <button class="modal-close" data-close-modal>&times;</button>
+        </div>
+        <form id="portal-cancel-form">
+          <div class="modal-body">
+            <div class="info-banner" style="background: rgba(223, 27, 65, 0.08); border-left: 3px solid var(--danger); margin-bottom: 16px;">
+              Your services for <strong id="cancel-modal-plan-name">Enterprise Annual Tier</strong> will remain fully active until the end of the current billing cycle. No further automatic charges will occur.
+            </div>
+            <div class="form-group">
+              <label class="form-label">Help us improve: Reason for cancellation</label>
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px; font-size: 13px;">
+                <label><input type="radio" name="cancel_reason" value="Project Completed" checked /> Project completed or discontinued</label>
+                <label><input type="radio" name="cancel_reason" value="Alternative Provider" /> Switching to an alternative solution</label>
+                <label><input type="radio" name="cancel_reason" value="Budget Constraints" /> Budget constraints</label>
+                <label><input type="radio" name="cancel_reason" value="Other" /> Other operational reasons</label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-close-modal>Keep My Plan</button>
+            <button type="submit" class="btn btn-secondary" style="color: var(--danger); border-color: rgba(223, 27, 65, 0.3);">
+              Confirm Cancellation
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Customer Portal: Subscription Detail Slideout Drawer -->
+    <div id="portal-sub-detail-drawer-overlay" class="drawer-overlay"></div>
+    <div id="portal-sub-detail-drawer" class="drawer-panel">
+      <div class="drawer-header">
+        <div>
+          <div style="font-size: 15px; font-weight: 700;" id="portal-drawer-sub-title">Enterprise Annual Tier</div>
+          <div class="mono-text" style="font-size: 12px; color: var(--text-muted);" id="portal-drawer-sub-id">SUB-8235 • Yearly Cycle</div>
+        </div>
+        <button class="modal-close" id="portal-sub-detail-drawer-close">&times;</button>
+      </div>
+      <div class="drawer-body" id="portal-drawer-sub-content">
+        <!-- Dynamically populated by openPortalSubDetailDrawer() -->
+      </div>
+    </div>
+
     <!-- Public Hero Section Homepage -->
     <div id="view-home" class="home-page">
-      <!-- Navbar -->
-      <header class="home-navbar">
-        <div style="display: flex; align-items: center; gap: 10px; cursor: pointer;" data-nav="home">
-          <div class="brand-icon">B</div>
-          <div style="font-weight: 700; font-size: 16px; color: var(--text-main); letter-spacing: -0.3px;">Brightloop Software</div>
-        </div>
-
-        <nav class="home-nav-links">
-          <a href="#features" class="home-nav-link">Features</a>
-          <a href="#pricing" class="home-nav-link">Pricing Plans</a>
-          <a href="#sentinel" class="home-nav-link">Revenue Sentinel</a>
-          <a href="#compliance" class="home-nav-link">Dual-GST</a>
-        </nav>
-
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <button class="btn btn-secondary" data-nav="auth">
-            <i data-lucide="log-in"></i> Sign In
-          </button>
-          <button class="btn btn-primary" data-action="launch-dashboard">
-            <i data-lucide="layout-dashboard"></i> Launch App
-          </button>
-        </div>
-      </header>
-
-      <!-- Hero Section -->
-      <section class="hero-section">
-        <div class="hero-badge">
-          <span class="badge-dot"></span>
-          <span>Intelligent Subscription & Revenue Operations Platform</span>
-        </div>
-
-        <h1 class="hero-title">
-          Subscription Operations. Simplified.<br />
-          <span class="gradient-text">Revenue Intelligence. Amplified.</span>
-        </h1>
-
-        <p class="hero-subtitle">
-          The all-in-one revenue platform to orchestrate recurring billing, dynamic product variants with attribute surcharges, automated dual-GST invoicing, and continuous revenue leakage detection.
-        </p>
-
-        <div class="hero-cta-group">
-          <button class="btn btn-primary btn-lg" data-action="launch-dashboard">
-            <i data-lucide="layout-dashboard"></i> Launch Dashboard
-          </button>
-          <button class="btn btn-secondary btn-lg" data-nav="auth">
-            <i data-lucide="log-in"></i> Sign In to Account
-          </button>
-        </div>
-
-        <!-- High-Fidelity Stripe-Style Dashboard Preview Mockup -->
-        <div class="hero-mockup-card">
-          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 20px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="width: 10px; height: 10px; border-radius: 50%; background: #00875a; display: inline-block;"></span>
-              <strong style="font-size: 13px; color: var(--text-main);">Live Revenue Engine: All Billing Cadences Synchronized</strong>
-            </div>
-            <div style="display: flex; gap: 8px;">
-              <span class="badge badge-neutral">Idempotency Token Active</span>
-              <span class="badge badge-neutral">Dual-GST Compliant</span>
-            </div>
+      <!-- Nouva Floating Glass Capsule Navbar -->
+      <div class="nouva-nav-wrapper">
+        <header class="home-navbar">
+          <div class="home-brand" data-nav="home">
+            <div class="brand-icon">B</div>
+            <div class="brand-title">Brightloop Software</div>
           </div>
 
-          <div class="kpi-grid" style="margin-bottom: 20px;">
-            <div class="kpi-card" style="box-shadow: none; border-color: var(--border-subtle);">
-              <div class="kpi-header"><span class="kpi-label">Monthly Recurring Revenue</span></div>
-              <div class="kpi-value">₹ 2,45,000</div>
-              <div class="kpi-trend"><span class="trend-up">+12.4%</span> <span class="trend-sub">vs last month</span></div>
-            </div>
-            <div class="kpi-card" style="box-shadow: none; border-color: var(--border-subtle);">
-              <div class="kpi-header"><span class="kpi-label">Annualized Run Rate</span></div>
-              <div class="kpi-value">₹ 29,40,000</div>
-              <div class="kpi-trend"><span class="trend-up">Paced</span> <span class="trend-sub">annual forecast</span></div>
-            </div>
-            <div class="kpi-card" style="box-shadow: none; border-color: var(--border-subtle);">
-              <div class="kpi-header"><span class="kpi-label">Active Subscriptions</span></div>
-              <div class="kpi-value">128</div>
-              <div class="kpi-trend"><span class="trend-up">+8</span> <span class="trend-sub">this billing cycle</span></div>
-            </div>
-            <div class="kpi-card" style="box-shadow: none; border-color: var(--border-subtle);">
-              <div class="kpi-header"><span class="kpi-label">Revenue at Risk Recovered</span></div>
-              <div class="kpi-value" style="color: var(--success);">₹ 48,700</div>
-              <div class="kpi-trend"><span class="trend-sub">Sentinel protected</span></div>
-            </div>
+          <nav class="home-nav-links">
+            <a href="#features" class="home-nav-link">Features</a>
+            <a href="#pricing" class="home-nav-link">Pricing Plans</a>
+            <a href="#sentinel" class="home-nav-link">Revenue Sentinel</a>
+            <a href="#compliance" class="home-nav-link">Dual-GST</a>
+          </nav>
+
+          <div class="home-nav-actions">
+            <button class="btn-ghost-nav" data-nav="auth">
+              <i data-lucide="log-in" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i> Sign In
+            </button>
+            <button class="btn-pill-cta" data-action="launch-dashboard">
+              <span>Launch Dashboard</span>
+              <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i>
+            </button>
+          </div>
+        </header>
+      </div>
+
+      <!-- Nouva Cinematic Hero Section -->
+      <section class="nouva-hero-container">
+        <div class="nouva-hero-backdrop-glow"></div>
+
+        <div class="nouva-hero-content">
+          <div class="nouva-badge">
+            <span class="badge-dot"></span>
+            <span>Intelligent Subscription &amp; Revenue Operations Platform</span>
           </div>
 
-          <div class="table-container">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Subscription ID</th>
-                  <th>Customer</th>
-                  <th>Plan Tier</th>
-                  <th>Dynamic Variant Calculation</th>
-                  <th>Billing Amount</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="mono-text">SUB-2026-001</td>
-                  <td>Acme Technologies Ltd</td>
-                  <td>Enterprise Growth</td>
-                  <td>Base ₹2,000 + Brand=Odoo ₹560</td>
-                  <td class="mono-text"><strong>₹ 18,500 / mo</strong></td>
-                  <td><span class="badge badge-success">Active</span></td>
-                </tr>
-                <tr>
-                  <td class="mono-text">SUB-2026-002</td>
-                  <td>Nexus Digital Media</td>
-                  <td>Standard Business</td>
-                  <td>Base ₹1,500 + Standard Support</td>
-                  <td class="mono-text"><strong>₹ 1,20,000 / yr</strong></td>
-                  <td><span class="badge badge-success">Active</span></td>
-                </tr>
-              </tbody>
-            </table>
+          <h1 class="nouva-hero-title">
+            <code class="nouva-code-pill">Subscription Operations.</code> Simplified.<br />
+            <span class="nouva-gradient-text">Revenue Intelligence. Amplified.</span>
+          </h1>
+
+          <p class="nouva-hero-subtitle">
+            The next-generation revenue engine for high-velocity teams: orchestrate multi-cadence billing, dynamic attribute surcharges, automated dual-GST invoicing, and real-time leakage detection.
+          </p>
+
+          <div class="nouva-hero-actions">
+            <button class="btn-nouva-primary" data-action="launch-dashboard">
+              <span>Launch Live Dashboard</span>
+              <i data-lucide="arrow-up-right" style="width: 16px; height: 16px;"></i>
+            </button>
+            <button class="btn-nouva-secondary" data-nav="auth">
+              <i data-lucide="lock" style="width: 15px; height: 15px;"></i>
+              <span>Sign In to Account</span>
+            </button>
+          </div>
+
+          <a href="#features" class="nouva-scroll-indicator">
+            <span>Scroll to discover</span>
+            <i data-lucide="chevron-down" style="width: 14px; height: 14px;"></i>
+          </a>
+        </div>
+
+        <!-- High-Fidelity Nouva Dark Glassmorphic Dashboard Showcase -->
+        <div class="nouva-mockup-wrapper">
+          <div class="nouva-mockup-card">
+            <div class="nouva-mockup-header">
+              <div class="nouva-status-pill">
+                <span class="nouva-status-dot"></span>
+                <span>Live Revenue Engine: All Billing Cadences Synchronized</span>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <span class="nouva-tag">Idempotency Token Active</span>
+                <span class="nouva-tag">Dual-GST Compliant</span>
+              </div>
+            </div>
+
+            <div class="kpi-grid" style="margin-bottom: 24px;">
+              <div class="nouva-kpi-card">
+                <div class="nouva-kpi-label">Monthly Recurring Revenue</div>
+                <div class="nouva-kpi-val">₹ 2,45,000</div>
+                <div class="nouva-kpi-sub"><i data-lucide="trending-up" style="width: 13px; height: 13px;"></i> +12.4% vs last month</div>
+              </div>
+              <div class="nouva-kpi-card">
+                <div class="nouva-kpi-label">Annualized Run Rate</div>
+                <div class="nouva-kpi-val">₹ 29,40,000</div>
+                <div class="nouva-kpi-sub"><i data-lucide="activity" style="width: 13px; height: 13px;"></i> Paced annual forecast</div>
+              </div>
+              <div class="nouva-kpi-card">
+                <div class="nouva-kpi-label">Active Subscriptions</div>
+                <div class="nouva-kpi-val">128</div>
+                <div class="nouva-kpi-sub"><i data-lucide="check-circle-2" style="width: 13px; height: 13px;"></i> +8 this billing cycle</div>
+              </div>
+              <div class="nouva-kpi-card">
+                <div class="nouva-kpi-label">Revenue at Risk Recovered</div>
+                <div class="nouva-kpi-val" style="color: #8cff2e;">₹ 48,700</div>
+                <div class="nouva-kpi-sub" style="color: rgba(255,255,255,0.6);"><i data-lucide="shield-check" style="width: 13px; height: 13px; color: #8cff2e;"></i> Sentinel protected</div>
+              </div>
+            </div>
+
+            <div class="table-container" style="background: rgba(0, 0, 0, 0.2); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); overflow-x: auto;">
+              <table class="nouva-dark-table">
+                <thead>
+                  <tr>
+                    <th>Subscription ID</th>
+                    <th>Customer</th>
+                    <th>Plan Tier</th>
+                    <th>Dynamic Variant Calculation</th>
+                    <th>Billing Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="mono-text" style="color: #8cff2e;">SUB-2026-001</td>
+                    <td style="font-weight: 500; color: #fff;">Acme Technologies Ltd</td>
+                    <td><span style="color: rgba(255, 255, 255, 0.85);">Enterprise Growth</span></td>
+                    <td style="color: rgba(255, 255, 255, 0.65);">Base ₹2,000 + Brand=Odoo ₹560</td>
+                    <td class="mono-text"><strong style="color: #ffffff;">₹ 18,500 / mo</strong></td>
+                    <td><span class="badge badge-success">Active</span></td>
+                  </tr>
+                  <tr>
+                    <td class="mono-text" style="color: #8cff2e;">SUB-2026-002</td>
+                    <td style="font-weight: 500; color: #fff;">Nexus Digital Media</td>
+                    <td><span style="color: rgba(255, 255, 255, 0.85);">Standard Business</span></td>
+                    <td style="color: rgba(255, 255, 255, 0.65);">Base ₹1,500 + Standard Support</td>
+                    <td class="mono-text"><strong style="color: #ffffff;">₹ 1,20,000 / yr</strong></td>
+                    <td><span class="badge badge-success">Active</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
@@ -1992,7 +2404,7 @@
       </section>
 
       <!-- Pricing Plans Section -->
-      <section id="pricing" class="home-container" style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 60px;">
+      <section id="pricing" class="home-container" style="background: rgba(14, 19, 29, 0.7); border-radius: var(--radius-lg); border: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 60px;">
         <div class="section-header-center">
           <h3>Transparent, Scalable Pricing</h3>
           <p>Deploy enterprise recurring billing and revenue operations tailored to your SaaS scale.</p>

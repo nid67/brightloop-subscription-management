@@ -892,118 +892,532 @@ table.data-table tbody tr:last-child td {
 }
 
 /* Public Hero Section Homepage */
+/* Public Hero Section Homepage - Nouva Atmospheric Design System */
 .home-page {
   display: none;
-  background-color: var(--bg-page);
+  background-color: #080c12;
+  color: #fafafa;
   min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  font-family: 'Onest', 'Inter', -apple-system, sans-serif;
 }
 
 .home-page.active {
   display: block;
 }
 
-.home-navbar {
-  height: 64px;
-  background: #ffffff;
-  border-bottom: 1px solid var(--border);
+/* Nouva Floating Glass Capsule Navbar */
+.nouva-nav-wrapper {
   position: sticky;
-  top: 0;
-  z-index: 100;
+  top: 18px;
+  z-index: 1000;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.home-navbar {
+  height: 56px;
+  background: rgba(14, 19, 29, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 48px;
+  padding: 0 16px 0 22px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.home-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.home-brand .brand-icon {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #635bff, #00d4ff);
+  border-radius: 8px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  box-shadow: 0 0 12px rgba(99, 91, 255, 0.4);
+}
+
+.home-brand .brand-title {
+  font-weight: 700;
+  font-size: 15px;
+  color: #ffffff;
+  letter-spacing: -0.3px;
 }
 
 .home-nav-links {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 28px;
 }
 
 .home-nav-link {
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: color 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .home-nav-link:hover {
-  color: var(--text-main);
+  color: #ffffff;
 }
 
-.hero-section {
+.home-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-ghost-nav {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+.btn-ghost-nav:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-pill-cta {
+  background: #ffffff;
+  color: #080c12;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.15);
+}
+
+.btn-pill-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.25);
+}
+
+/* Nouva Cinematic Hero Section */
+.nouva-hero-container {
+  position: relative;
+  min-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   padding: 80px 24px 60px;
   text-align: center;
-  max-width: 1080px;
+  overflow: hidden;
+  background: 
+    radial-gradient(circle at 50% 28%, rgba(255, 140, 0, 0.12) 0%, rgba(8, 12, 18, 0.6) 42%, #080c12 85%),
+    url('https://framerusercontent.com/images/ro6i79EOvzrYuRqMtGWmH5OnP0k.png?width=2696&height=1511') center top / cover no-repeat;
+}
+
+.nouva-hero-backdrop-glow {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 650px;
+  height: 280px;
+  background: radial-gradient(ellipse at center, rgba(99, 91, 255, 0.16) 0%, rgba(255, 140, 0, 0.12) 50%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.nouva-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 960px;
   margin: 0 auto;
 }
 
-.hero-badge {
+.nouva-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--primary-light);
-  color: var(--primary);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 6px 16px;
+  border-radius: 9999px;
   font-size: 12px;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 20px;
+  font-weight: 500;
+  color: #ffffffd9;
   margin-bottom: 24px;
 }
 
-.badge-dot {
-  width: 7px;
-  height: 7px;
-  background: var(--primary);
+.nouva-badge .badge-dot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
+  background: #8cff2e;
+  box-shadow: 0 0 8px #8cff2e;
 }
 
-.hero-title {
-  font-size: 46px;
-  font-weight: 800;
-  color: var(--text-main);
-  line-height: 1.15;
-  letter-spacing: -1.2px;
+.nouva-hero-title {
+  font-size: clamp(38px, 6vw, 68px);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.04em;
+  color: #fafafa;
+  margin-bottom: 20px;
+  font-family: 'Onest', 'Inter', sans-serif;
 }
 
-.gradient-text {
-  background: linear-gradient(135deg, #635bff 0%, #00d4ff 100%);
+.nouva-code-pill {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 4px 18px;
+  border-radius: 12px;
+  font-family: 'Onest', 'Inter', sans-serif;
+  font-size: 0.94em;
+  color: #ffffff;
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.nouva-gradient-text {
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.7) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.hero-subtitle {
+.nouva-hero-subtitle {
   font-size: 17px;
-  color: var(--text-secondary);
-  max-width: 720px;
-  margin: 20px auto 36px;
-  line-height: 1.6;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 580px;
+  margin: 0 auto 36px;
 }
 
-.hero-cta-group {
+.nouva-hero-actions {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 14px;
-  margin-bottom: 56px;
+  margin-bottom: 32px;
 }
 
-.btn-lg {
-  padding: 10px 22px;
+.btn-nouva-primary {
+  background: #ffffff;
+  color: #080c12;
   font-size: 14px;
   font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.18);
 }
 
-.hero-mockup-card {
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+.btn-nouva-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+}
+
+.btn-nouva-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 26px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
+}
+
+.btn-nouva-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.nouva-scroll-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  margin-bottom: 48px;
+}
+
+.nouva-scroll-indicator:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.nouva-scroll-indicator svg {
+  animation: bounceDown 1.8s infinite ease-in-out;
+}
+
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+/* Nouva Dark Glassmorphic Dashboard Showcase */
+.nouva-mockup-wrapper {
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  z-index: 3;
+}
+
+.nouva-mockup-card {
+  background: rgba(14, 19, 29, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
   padding: 24px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 24px 80px -12px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.06);
   text-align: left;
+}
+
+.nouva-mockup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.nouva-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fafafa;
+}
+
+.nouva-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #8cff2e;
+  box-shadow: 0 0 8px #8cff2e;
+}
+
+.nouva-tag {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+}
+
+.nouva-kpi-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 16px;
+  transition: border-color 0.2s ease;
+}
+
+.nouva-kpi-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.nouva-kpi-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.nouva-kpi-val {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  font-family: var(--font-mono);
+}
+
+.nouva-kpi-sub {
+  font-size: 12px;
+  color: #8cff2e;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Dark themed table for mockup */
+.nouva-dark-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.nouva-dark-table th {
+  text-align: left;
+  padding: 10px 14px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nouva-dark-table td {
+  padding: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.nouva-dark-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Dark Mode Harmonization for Lower Homepage Sections */
+.home-page .section-header-center h3 {
+  color: #fafafa;
+}
+
+.home-page .section-header-center p {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.home-page .feature-box {
+  background: rgba(14, 19, 29, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.home-page .feature-box:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.home-page .feature-box h4 {
+  color: #fafafa;
+}
+
+.home-page .feature-box p {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.home-page .card {
+  background: rgba(14, 19, 29, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fafafa;
+}
+
+.home-page .card-title {
+  color: #fafafa;
+}
+
+.home-page .card-subtitle {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.home-page .cta-banner {
+  background: linear-gradient(135deg, rgba(99, 91, 255, 0.2) 0%, rgba(255, 140, 0, 0.15) 100%), #0e131d;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.home-page .cta-banner h3 {
+  color: #ffffff;
+}
+
+.home-page .cta-banner p {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.home-page .home-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+  background: #080c12;
+}
+
+.home-page .home-footer strong {
+  color: #fafafa;
+}
+
+@media (max-width: 768px) {
+  .nouva-nav-wrapper {
+    padding: 0 12px;
+    top: 10px;
+  }
+  .home-navbar {
+    height: 50px;
+    padding: 0 14px;
+  }
+  .home-nav-links {
+    display: none;
+  }
+  .nouva-hero-container {
+    padding: 50px 16px 40px;
+  }
+  .nouva-hero-title {
+    font-size: 32px;
+  }
+  .nouva-hero-subtitle {
+    font-size: 15px;
+    margin-bottom: 24px;
+  }
+  .nouva-hero-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+  .btn-nouva-primary, .btn-nouva-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+  .nouva-mockup-card {
+    padding: 16px;
+  }
 }
 
 .home-container {

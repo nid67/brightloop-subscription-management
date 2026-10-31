@@ -2,15 +2,30 @@ import { createIcons, icons } from 'lucide';
 import Chart from 'chart.js/auto';
 import { db } from './db.js';
 import { dataService } from './modules/customer-product-plan/data-service.js';
+import { quoteSubService } from './modules/quotations-subscriptions/data-service.js';
+import { invoiceService } from './modules/billing-invoices-tax/invoice-service.js';
 import './modules/customer-product-plan/styles.css';
 import { initCustomerProductPlanModule } from './modules/customer-product-plan/index.js';
 import './modules/quotations-subscriptions/quotations-subscriptions.css';
 import { initQuoteSubscriptionModule } from './modules/quotations-subscriptions/index.js';
+import './modules/billing-invoices-tax/module.css';
+import { initBillingInvoicesTaxModule } from './modules/billing-invoices-tax/index.js';
+import './modules/payments-discounts/module.css';
+import { initPaymentsDiscountsModule } from './modules/payments-discounts/index.js';
+import './styles/module-auth.css';
+import { initPortal, syncPortalWithSupabase } from './modules/portal.js';
+
+window.lucide = {
+  createIcons: () => createIcons({ icons })
+};
 
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize Feature Modules
   initCustomerProductPlanModule();
   initQuoteSubscriptionModule();
+  initBillingInvoicesTaxModule();
+  initPaymentsDiscountsModule();
+  initPortal();
 
   createIcons({ icons });
 
@@ -35,17 +50,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function isUserLoggedIn() {
-    return sessionStorage.getItem('brightloop_session') === 'active';
+    return sessionStorage.getItem('brightloop_session') === 'active' || localStorage.getItem('brightloop_session') === 'active';
   }
 
   function getUserRole() {
-    return sessionStorage.getItem('brightloop_role') || 'ADMIN';
+    return sessionStorage.getItem('brightloop_role') || localStorage.getItem('brightloop_role') || 'ADMIN';
   }
 
   function applyUserSession() {
     const loggedIn = isUserLoggedIn();
     const role = getUserRole();
-    const userJson = sessionStorage.getItem('brightloop_user');
+    const userJson = sessionStorage.getItem('brightloop_user') || localStorage.getItem('brightloop_user');
     let user = null;
     if (userJson) {
       try { user = JSON.parse(userJson); } catch (e) {}
@@ -166,6 +181,19 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
+    if (targetViewId === 'portal') {
+      const userJson = sessionStorage.getItem('brightloop_user') || localStorage.getItem('brightloop_user');
+      if (userJson) {
+        try {
+          const u = JSON.parse(userJson);
+          updateCustomerPortalUI(u);
+        } catch (e) {}
+      }
+    } else {
+      // Sync database records across modules when navigating
+      syncAllDataFromSupabase();
+    }
+
     createIcons({ icons });
 
     if (targetViewId === 'dashboard' && dashboardChartInstance) {
@@ -180,6 +208,9 @@ document.addEventListener('DOMContentLoaded', () => {
     sessionStorage.removeItem('brightloop_session');
     sessionStorage.removeItem('brightloop_role');
     sessionStorage.removeItem('brightloop_user');
+    localStorage.removeItem('brightloop_session');
+    localStorage.removeItem('brightloop_role');
+    localStorage.removeItem('brightloop_user');
     applyUserSession();
     showHome();
   }
@@ -366,11 +397,29 @@ document.addEventListener('DOMContentLoaded', () => {
     if (contactEmailEl) contactEmailEl.textContent = user.email || '';
 
     let customerInfo = null;
+    let subscriptionInfo = null;
+    let planInfo = null;
+
     try {
-      const { data } = await db.from('customers').select('*').eq('email', user.email).maybeSingle();
-      if (data) customerInfo = data;
+      // 1. Fetch customer profile
+      const { data: custData } = await db.from('customers').select('*').eq('email', user.email).maybeSingle();
+      if (custData) customerInfo = custData;
+
+      // 2. Fetch customer's active subscription and linked plan
+      if (customerInfo?.id) {
+        const { data: subData } = await db
+          .from('subscriptions')
+          .select('*, plans(*)')
+          .eq('customer_id', customerInfo.id)
+          .maybeSingle();
+
+        if (subData) {
+          subscriptionInfo = subData;
+          planInfo = subData.plans;
+        }
+      }
     } catch (e) {
-      console.warn('Could not fetch customer record:', e);
+      console.warn('Could not fetch customer subscription details from DB:', e);
     }
 
     if (!customerInfo) {
@@ -381,12 +430,28 @@ document.addEventListener('DOMContentLoaded', () => {
       companyEl.textContent = customerInfo?.company_name || customerInfo?.company || (user.full_name ? `${user.full_name}'s Organization` : 'My Organization');
     }
 
-    if (subNameEl) subNameEl.textContent = 'Brightloop Standard Cloud Tier';
-    if (subCycleEl) subCycleEl.textContent = 'Billing cycle: Monthly (Auto-renews on 15th)';
-    if (subPriceEl) subPriceEl.textContent = '₹ 4,999 / month';
-    if (subBadgeEl) {
-      subBadgeEl.textContent = 'Active';
-      subBadgeEl.className = 'badge badge-success';
+    // Display their respective subscription details
+    if (subscriptionInfo && planInfo) {
+      const renewalDate = new Date(subscriptionInfo.current_period_end).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      const formattedPrice = Number(subscriptionInfo.recurring_amount || planInfo.recurring_price).toLocaleString('en-IN');
+      const interval = planInfo.interval_unit === 'YEARLY' ? 'year' : 'month';
+
+      if (subNameEl) subNameEl.textContent = `${planInfo.name} (${subscriptionInfo.subscription_code})`;
+      if (subCycleEl) subCycleEl.textContent = `Billing cycle: ${planInfo.interval_unit} (Next renewal: ${renewalDate})`;
+      if (subPriceEl) subPriceEl.textContent = `₹ ${formattedPrice} / ${interval}`;
+      if (subBadgeEl) {
+        subBadgeEl.textContent = subscriptionInfo.status || 'Active';
+        subBadgeEl.className = subscriptionInfo.status === 'ACTIVE' ? 'badge badge-success' : 'badge badge-neutral';
+      }
+    } else {
+      // Default standard subscription presentation
+      if (subNameEl) subNameEl.textContent = 'Standard Monthly Tier';
+      if (subCycleEl) subCycleEl.textContent = 'Billing cycle: Monthly (Auto-renews on 15th)';
+      if (subPriceEl) subPriceEl.textContent = '₹ 4,999 / month';
+      if (subBadgeEl) {
+        subBadgeEl.textContent = 'Active';
+        subBadgeEl.className = 'badge badge-success';
+      }
     }
 
     if (invNumberEl) {
@@ -394,36 +459,194 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (invMetaEl) {
       const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-      invMetaEl.textContent = `${today} • ₹ 4,999 • Dual-GST Paid`;
+      const priceText = subscriptionInfo?.recurring_amount ? `₹ ${Number(subscriptionInfo.recurring_amount).toLocaleString('en-IN')}` : '₹ 4,999';
+      invMetaEl.textContent = `${today} • ${priceText} • Dual-GST Paid`;
     }
+
+    // Synchronize comprehensive Customer Portal views (KPIs, tabs, authorized services, invoices)
+    try {
+      await syncPortalWithSupabase(user);
+    } catch (syncErr) {
+      console.warn('syncPortalWithSupabase error:', syncErr);
+    }
+    createIcons({ icons });
   }
 
-  // Synchronize customers from Supabase into local dataService
-  async function syncCustomersFromSupabase() {
+  // Synchronize all database tables (Customers, Plans, Subscriptions, Invoices) from Supabase into teammate modules
+  async function syncAllDataFromSupabase() {
     try {
-      const { data: dbCustomers, error } = await db.from('customers').select('*');
+      // 1. Sync Customers from Supabase
+      const { data: dbCustomers } = await db.from('customers').select('*').order('created_at', { ascending: false });
       if (dbCustomers && dbCustomers.length > 0) {
-        const localList = dataService.getCustomers();
-        for (const dbCust of dbCustomers) {
-          const exists = localList.some(c => c.email?.toLowerCase() === dbCust.email?.toLowerCase());
-          if (!exists) {
-            dataService.createCustomer({
-              name: dbCust.contact_name || dbCust.company_name,
-              company: dbCust.company_name,
-              email: dbCust.email,
-              customerType: 'Enterprise',
-              status: 'Active'
-            });
+        const localCusts = dataService.getCustomers();
+        for (const c of dbCustomers) {
+          const idx = localCusts.findIndex(lc => lc.email?.toLowerCase() === c.email?.toLowerCase());
+          const mappedCust = {
+            id: c.id,
+            name: c.contact_name || c.company_name,
+            company: c.company_name,
+            email: c.email,
+            phone: c.phone || '+91 98765 43210',
+            gstin: c.gstin || '27AABCS9821R1Z8',
+            address: c.billing_address || 'Whitefield, Bengaluru, Karnataka',
+            state: 'Karnataka',
+            stateCode: '29',
+            customerType: 'Enterprise',
+            status: 'Active',
+            createdAt: c.created_at
+          };
+          if (idx !== -1) {
+            localCusts[idx] = { ...localCusts[idx], ...mappedCust };
+          } else {
+            localCusts.unshift(mappedCust);
           }
         }
+        dataService.customers = localCusts;
+        dataService._persist('subscriptiq_customers', localCusts);
+      }
+
+      // 2. Sync Plans from Supabase
+      const { data: dbPlans } = await db.from('plans').select('*');
+      if (dbPlans && dbPlans.length > 0) {
+        const localPlans = dataService.getPlans();
+        for (const p of dbPlans) {
+          const idx = localPlans.findIndex(lp => lp.code === p.plan_code || lp.name === p.name);
+          const mappedPlan = {
+            id: p.id,
+            name: p.name,
+            code: p.plan_code,
+            interval: p.interval_unit === 'YEARLY' ? 'year' : 'month',
+            intervalCount: p.interval_count || 1,
+            price: Number(p.recurring_price),
+            autoRenew: p.auto_renew ?? true,
+            allowPause: p.allow_pause ?? true,
+            gracePeriod: p.auto_close_days || 30,
+            status: 'Active'
+          };
+          if (idx !== -1) {
+            localPlans[idx] = { ...localPlans[idx], ...mappedPlan };
+          } else {
+            localPlans.unshift(mappedPlan);
+          }
+        }
+        dataService.plans = localPlans;
+        dataService._persist('subscriptiq_plans', localPlans);
+      }
+
+      // 3. Sync Subscriptions from Supabase
+      const { data: dbSubs } = await db.from('subscriptions').select('*, plans(*), customers(*)').order('created_at', { ascending: false });
+      if (dbSubs && dbSubs.length > 0) {
+        const localSubs = quoteSubService.getSubscriptions();
+        for (const s of dbSubs) {
+          const subNum = s.subscription_code;
+          const idx = localSubs.findIndex(ls => ls.subscriptionNumber === subNum || ls.id === subNum);
+          const plan = s.plans || {};
+          const cust = s.customers || {};
+          const mappedSub = {
+            id: subNum,
+            subscriptionNumber: subNum,
+            customerId: cust.id || s.customer_id,
+            customerName: cust.contact_name || cust.company_name || 'Subscriber',
+            customerEmail: cust.email || '',
+            customerCompany: cust.company_name || 'STARK Industries',
+            planId: plan.id || s.plan_id,
+            planName: plan.name || 'Enterprise Annual Tier',
+            billingFrequency: plan.interval_unit === 'YEARLY' ? 'Yearly' : 'Monthly',
+            recurringAmount: Number(s.recurring_amount || plan.recurring_price || 49999),
+            status: s.status === 'ACTIVE' ? 'Active' : s.status,
+            startDate: s.current_period_start,
+            currentPeriodStart: s.current_period_start,
+            currentPeriodEnd: s.current_period_end,
+            nextBillingDate: s.current_period_end,
+            autoRenew: plan.auto_renew ?? true,
+            lines: [
+              {
+                description: `${plan.name || 'Enterprise Tier'} Subscription`,
+                quantity: 1,
+                unitPrice: Number(s.recurring_amount || plan.recurring_price || 49999),
+                amount: Number(s.recurring_amount || plan.recurring_price || 49999)
+              }
+            ]
+          };
+          if (idx !== -1) {
+            localSubs[idx] = { ...localSubs[idx], ...mappedSub };
+          } else {
+            localSubs.unshift(mappedSub);
+          }
+        }
+        quoteSubService.subscriptions = localSubs;
+        quoteSubService._persist(quoteSubService.STORAGE_KEYS.SUBSCRIPTIONS, localSubs);
+      }
+
+      // 4. Sync Invoices from Supabase
+      const { data: dbInvoices } = await db.from('invoices').select('*, customers(*), subscriptions(*)').order('created_at', { ascending: false });
+      if (dbInvoices && dbInvoices.length > 0) {
+        const mappedInvoices = dbInvoices.map(inv => {
+          const cust = inv.customers || {};
+          const sub = inv.subscriptions || {};
+          return {
+            id: inv.invoice_number,
+            invoiceNumber: inv.invoice_number,
+            subscriptionId: sub.subscription_code || 'SUB-8235',
+            customerId: cust.id || inv.customer_id,
+            customerName: cust.contact_name || cust.company_name || 'STARK Industries',
+            customerEmail: cust.email || '',
+            customerGstin: cust.gstin || '27AABCS9821R1Z8',
+            customerAddress: cust.billing_address || 'Whitefield, Bengaluru, Karnataka',
+            placeOfSupply: 'Karnataka (29)',
+            billingPeriod: `${inv.created_at ? new Date(inv.created_at).toLocaleDateString('en-GB') : '31 Oct 2026'} - ${inv.due_date ? new Date(inv.due_date).toLocaleDateString('en-GB') : '30 Nov 2026'}`,
+            invoiceDate: inv.created_at ? new Date(inv.created_at).toISOString().split('T')[0] : '2026-10-31',
+            dueDate: inv.due_date || '2026-11-30',
+            frequency: 'Annual',
+            status: inv.status === 'PAID' ? 'Paid' : (inv.status === 'UNPAID' ? 'Confirmed' : inv.status),
+            subtotal: Number(inv.subtotal),
+            discountAmount: 0.0,
+            discountCode: null,
+            taxType: 'Intra-State GST (CGST 9% + SGST 9%)',
+            cgstRate: Number(inv.cgst_rate || 9.0),
+            cgstAmount: Number(inv.cgst_amount || 0),
+            sgstRate: Number(inv.sgst_rate || 9.0),
+            sgstAmount: Number(inv.sgst_amount || 0),
+            igstRate: Number(inv.igst_rate || 0),
+            igstAmount: Number(inv.igst_amount || 0),
+            totalTax: Number(inv.cgst_amount || 0) + Number(inv.sgst_amount || 0),
+            grandTotal: Number(inv.total_amount),
+            paidAmount: inv.status === 'PAID' ? Number(inv.total_amount) : 0,
+            outstandingBalance: inv.status === 'PAID' ? 0 : Number(inv.total_amount),
+            paymentStatus: inv.status === 'PAID' ? 'Paid' : 'Unpaid',
+            sentAt: new Date().toLocaleString(),
+            confirmedAt: new Date().toLocaleString(),
+            idempotencyKey: inv.idempotency_key || `tok_inv_${inv.invoice_number.toLowerCase()}`,
+            lines: [
+              {
+                description: 'Brightloop Software Enterprise Annual Subscription',
+                hsnSac: '998313',
+                quantity: 1,
+                unitPrice: Number(inv.subtotal),
+                amount: Number(inv.subtotal)
+              }
+            ],
+            payments: inv.status === 'PAID' ? [
+              {
+                date: new Date().toISOString().split('T')[0],
+                amount: Number(inv.total_amount),
+                method: 'Auto-Debit / Corporate Card',
+                reference: 'TXN-' + inv.invoice_number.replace('BL-INV-', '')
+              }
+            ] : []
+          };
+        });
+
+        invoiceService.invoices = mappedInvoices;
+        invoiceService.notify('INVOICES_SYNCED', mappedInvoices);
       }
     } catch (err) {
-      console.warn('Could not sync customers from database:', err);
+      console.warn('Global database sync warning:', err);
     }
   }
 
-  // Initial sync of customers
-  syncCustomersFromSupabase();
+  // Initial sync of all data
+  syncAllDataFromSupabase();
 
   // Authentication form submissions
   const loginForm = document.getElementById('auth-login-form');
@@ -484,6 +707,9 @@ document.addEventListener('DOMContentLoaded', () => {
         sessionStorage.setItem('brightloop_session', 'active');
         sessionStorage.setItem('brightloop_role', authenticatedUser.role);
         sessionStorage.setItem('brightloop_user', JSON.stringify(authenticatedUser));
+        localStorage.setItem('brightloop_session', 'active');
+        localStorage.setItem('brightloop_role', authenticatedUser.role);
+        localStorage.setItem('brightloop_user', JSON.stringify(authenticatedUser));
 
         applyUserSession();
 
@@ -491,7 +717,11 @@ document.addEventListener('DOMContentLoaded', () => {
           showApp('dashboard');
         } else {
           // CUSTOMER: Strictly redirect to Customer Dashboard
-          await updateCustomerPortalUI(authenticatedUser);
+          try {
+            await updateCustomerPortalUI(authenticatedUser);
+          } catch (portalErr) {
+            console.warn('Customer portal update warning:', portalErr);
+          }
           showApp('portal');
         }
       } catch (err) {
@@ -568,20 +798,66 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 2. Insert into Supabase customers table
-        const { error: custError } = await db
+        const { data: newCust, error: custError } = await db
           .from('customers')
           .insert({
             user_id: newUser.id,
             company_name: companyName,
             contact_name: fullName,
             email: email
-          });
+          })
+          .select()
+          .single();
 
         if (custError) {
           console.warn('Customer table insert warning:', custError);
         }
 
-        // 3. Immediately register in dataService so Admin Customer Directory shows them
+        // 3. Automatically link active SaaS subscription and initial tax invoice in Supabase
+        try {
+          const { data: plans } = await db.from('plans').select('*');
+          const defaultPlan = plans?.find(p => p.plan_code === 'PLAN-STD-MONTHLY') || plans?.[0];
+          if (defaultPlan && newCust?.id) {
+            const today = new Date().toISOString().split('T')[0];
+            const nextMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            const subCode = 'SUB-' + Math.floor(1000 + Math.random() * 9000);
+
+            const { data: newSub } = await db.from('subscriptions').insert({
+              subscription_code: subCode,
+              customer_id: newCust.id,
+              plan_id: defaultPlan.id,
+              status: 'ACTIVE',
+              current_period_start: today,
+              current_period_end: nextMonth,
+              recurring_amount: defaultPlan.recurring_price,
+              idempotency_token: 'tok_' + subCode.toLowerCase()
+            }).select().maybeSingle();
+
+            if (newSub) {
+              const invCode = 'BL-INV-2026-' + subCode.replace('SUB-', '');
+              const subtotal = Math.round((Number(defaultPlan.recurring_price) / 1.18) * 100) / 100;
+              const gstEach = Math.round(((Number(defaultPlan.recurring_price) - subtotal) / 2) * 100) / 100;
+              await db.from('invoices').insert({
+                invoice_number: invCode,
+                subscription_id: newSub.id,
+                customer_id: newCust.id,
+                subtotal: subtotal,
+                cgst_rate: 9.00,
+                cgst_amount: gstEach,
+                sgst_rate: 9.00,
+                sgst_amount: gstEach,
+                total_amount: defaultPlan.recurring_price,
+                status: 'PAID',
+                due_date: nextMonth,
+                idempotency_key: 'tok_inv_' + subCode.toLowerCase()
+              });
+            }
+          }
+        } catch (subErr) {
+          console.warn('Subscription auto-creation warning:', subErr);
+        }
+
+        // 4. Immediately register in dataService so Admin Customer Directory shows them
         dataService.createCustomer({
           name: fullName,
           company: companyName,
@@ -594,14 +870,14 @@ document.addEventListener('DOMContentLoaded', () => {
         registerForm.reset();
         checkPasswordCriteria();
 
-        // 5. Pre-fill login email and redirect to login page with success notification
+        // 5. Pre-fill login credentials so the user can immediately sign in in 1 click
         const loginEmailInput = document.getElementById('login-email-input');
         const loginPasswordInput = document.getElementById('login-password-input');
         if (loginEmailInput) loginEmailInput.value = email;
-        if (loginPasswordInput) loginPasswordInput.value = '';
+        if (loginPasswordInput) loginPasswordInput.value = password;
 
         showAuth('login');
-        showLoginAlert('Account successfully registered! Please sign in with your credentials.', 'success');
+        showLoginAlert('Account successfully registered! Click "Sign In" below to enter your Customer Dashboard.', 'success');
       } catch (err) {
         console.error('Registration failed:', err);
         showRegAlert(err.message || 'Registration failed. Please check network and try again.', 'error');
@@ -653,6 +929,18 @@ document.addEventListener('DOMContentLoaded', () => {
     linkToForgot.addEventListener('click', (e) => {
       e.preventDefault();
       switchAuthTab('forgot');
+    });
+  }
+
+  // Auto-fill Admin credentials helper
+  const fillAdminBtn = document.getElementById('fill-admin-credentials-btn');
+  if (fillAdminBtn) {
+    fillAdminBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const loginEmailInput = document.getElementById('login-email-input');
+      const loginPasswordInput = document.getElementById('login-password-input');
+      if (loginEmailInput) loginEmailInput.value = 'admin@brightloop.io';
+      if (loginPasswordInput) loginPasswordInput.value = 'Brightloop@2026';
     });
   }
 
@@ -850,7 +1138,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Restore session UI on initial load if user is logged in
   applyUserSession();
   if (isUserLoggedIn()) {
-    const userJson = sessionStorage.getItem('brightloop_user');
+    const userJson = sessionStorage.getItem('brightloop_user') || localStorage.getItem('brightloop_user');
     if (userJson) {
       try {
         const user = JSON.parse(userJson);
