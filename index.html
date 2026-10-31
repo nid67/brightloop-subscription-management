@@ -15,7 +15,7 @@
     <div id="app" class="app-layout">
       <!-- Sidebar Navigation -->
       <aside class="sidebar">
-        <div class="sidebar-brand">
+        <div class="sidebar-brand" style="cursor: pointer;" data-nav="dashboard">
           <div class="brand-icon">B</div>
           <div class="brand-text">
             <h1>Brightloop</h1>
@@ -25,75 +25,83 @@
 
         <nav class="sidebar-nav">
           <div class="nav-section-title">Overview</div>
-          <a class="nav-link active" data-view="dashboard">
+          <a class="nav-link" data-view="home">
+            <i data-lucide="home"></i>
+            <span>Home Website</span>
+          </a>
+          <a class="nav-link active admin-only" data-view="dashboard">
             <i data-lucide="layout-dashboard"></i>
             <span>Dashboard</span>
           </a>
+          <a class="nav-link customer-only" data-view="portal">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Customer Dashboard</span>
+          </a>
 
-          <div class="nav-section-title">Business Operations</div>
-          <a class="nav-link" data-view="customers">
+          <div class="nav-section-title admin-only">Business Operations</div>
+          <a class="nav-link admin-only" data-view="customers">
             <i data-lucide="users"></i>
             <span>Customers</span>
           </a>
-          <a class="nav-link" data-view="products">
+          <a class="nav-link admin-only" data-view="products">
             <i data-lucide="package"></i>
             <span>Products & Variants</span>
           </a>
-          <a class="nav-link" data-view="plans">
+          <a class="nav-link admin-only" data-view="plans">
             <i data-lucide="layers"></i>
             <span>Pricing Plans</span>
           </a>
-          <a class="nav-link" data-view="subscriptions">
+          <a class="nav-link admin-only" data-view="subscriptions">
             <i data-lucide="repeat"></i>
             <span>Subscriptions</span>
           </a>
-          <a class="nav-link" data-view="quotations">
+          <a class="nav-link admin-only" data-view="quotations">
             <i data-lucide="file-text"></i>
             <span>Quotations</span>
           </a>
 
-          <div class="nav-section-title">Financial Operations</div>
-          <a class="nav-link" data-view="invoices">
+          <div class="nav-section-title admin-only">Financial Operations</div>
+          <a class="nav-link admin-only" data-view="invoices">
             <i data-lucide="receipt"></i>
             <span>Invoices</span>
           </a>
-          <a class="nav-link" data-view="payments">
+          <a class="nav-link admin-only" data-view="payments">
             <i data-lucide="credit-card"></i>
             <span>Payments</span>
           </a>
-          <a class="nav-link" data-view="discounts">
+          <a class="nav-link admin-only" data-view="discounts">
             <i data-lucide="tag"></i>
             <span>Discounts</span>
           </a>
-          <a class="nav-link" data-view="taxes">
+          <a class="nav-link admin-only" data-view="taxes">
             <i data-lucide="percent"></i>
             <span>Taxes & GST</span>
           </a>
 
-          <div class="nav-section-title">Intelligence</div>
-          <a class="nav-link" data-view="leakage">
+          <div class="nav-section-title admin-only">Intelligence</div>
+          <a class="nav-link admin-only" data-view="leakage">
             <i data-lucide="shield-alert"></i>
             <span>Revenue Leakage</span>
           </a>
-          <a class="nav-link" data-view="analytics">
+          <a class="nav-link admin-only" data-view="analytics">
             <i data-lucide="line-chart"></i>
             <span>Revenue Analytics</span>
           </a>
-          <a class="nav-link" data-view="health">
+          <a class="nav-link admin-only" data-view="health">
             <i data-lucide="heart-pulse"></i>
             <span>Subscription Health</span>
           </a>
 
-          <div class="nav-section-title">Administration</div>
-          <a class="nav-link" data-view="staff">
+          <div class="nav-section-title admin-only">Administration</div>
+          <a class="nav-link admin-only" data-view="staff">
             <i data-lucide="user-check"></i>
             <span>Staff Management</span>
           </a>
-          <a class="nav-link" data-view="portal">
+          <a class="nav-link admin-only" data-view="portal">
             <i data-lucide="external-link"></i>
             <span>Customer Portal</span>
           </a>
-          <a class="nav-link" data-view="settings">
+          <a class="nav-link admin-only" data-view="settings">
             <i data-lucide="settings"></i>
             <span>Settings</span>
           </a>
@@ -101,13 +109,13 @@
 
         <div class="sidebar-footer">
           <div class="user-snippet">
-            <div class="user-avatar">BL</div>
+            <div class="user-avatar" id="sidebar-user-avatar">BL</div>
             <div class="user-info">
-              <div class="user-name">Brightloop Admin</div>
-              <div class="user-role">Super Admin</div>
+              <div class="user-name" id="sidebar-user-name">Brightloop Admin</div>
+              <div class="user-role" id="sidebar-user-role">Super Admin</div>
             </div>
           </div>
-          <button class="icon-btn" title="Sign out" data-view="auth">
+          <button id="logout-btn" class="icon-btn" title="Sign out" data-action="logout">
             <i data-lucide="log-out"></i>
           </button>
         </div>
@@ -119,7 +127,7 @@
         <header class="topbar">
           <div class="topbar-left">
             <div class="breadcrumb">
-              <span>Brightloop</span>
+              <span style="cursor: pointer;" data-nav="dashboard">Brightloop</span>
               <span>/</span>
               <span id="breadcrumb-current" class="current">Dashboard</span>
             </div>
@@ -136,11 +144,10 @@
               <option value="EUR">€ EUR</option>
             </select>
 
-            <select id="role-select" class="role-badge-select" title="Current Role Preview">
-              <option value="admin">Role: Admin</option>
-              <option value="staff">Role: Staff</option>
-              <option value="customer">Role: Customer</option>
-            </select>
+            <div class="user-role-indicator" title="Current session authorization">
+              <span class="role-dot"></span>
+              <span>Admin</span>
+            </div>
 
             <button class="icon-btn" title="System Notifications">
               <i data-lucide="bell"></i>
@@ -264,7 +271,11 @@
                     <div class="card-title">Recurring Revenue Trajectory</div>
                     <div class="card-subtitle">Monthly recognized revenue vs billing targets</div>
                   </div>
-                  <span class="badge badge-info">Chart.js Enabled</span>
+                  <div style="display: flex; gap: 4px;">
+                    <button class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 11px; background: var(--bg-page);">30D</button>
+                    <button class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 11px;">90D</button>
+                    <button class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 11px;">1Y</button>
+                  </div>
                 </div>
                 <div class="card-body">
                   <canvas id="dashboardRevenueChart" height="220"></canvas>
@@ -336,12 +347,12 @@
                       </td>
                     </tr>
                     <tr>
-                      <td class="mono-text">[SUB-ID-PLACEHOLDER]</td>
-                      <td><span class="text-muted">[Customer Name Placeholder]</span></td>
-                      <td><span class="text-muted">[Selected Plan]</span></td>
-                      <td><span class="text-muted">[Interval]</span></td>
+                      <td class="mono-text">SUB-2026-003</td>
+                      <td><span class="text-muted">Apex Systems India</span></td>
+                      <td><span class="text-muted">Growth Monthly</span></td>
+                      <td><span class="text-muted">Monthly</span></td>
                       <td class="mono-text">₹ 0.00</td>
-                      <td><span class="badge badge-neutral">[Status]</span></td>
+                      <td><span class="badge badge-neutral">Draft</span></td>
                       <td>
                         <button class="btn btn-secondary btn-sm" disabled>Inspect</button>
                       </td>
@@ -419,14 +430,14 @@
                         <button class="btn btn-secondary btn-sm" data-drawer="customer-drawer">View Profile</button>
                       </td>
                     </tr>
-                    <!-- Backend integration placeholder row -->
+                    <!-- Live database record slot -->
                     <tr>
-                      <td><span class="text-muted">[Customer Name Placeholder]</span></td>
-                      <td><span class="text-muted">[email@company.com]</span></td>
-                      <td><span class="text-muted">[Subscription Count]</span></td>
+                      <td><span class="text-muted">Apex Systems India</span></td>
+                      <td><span class="text-muted">contact@apexsystems.in</span></td>
+                      <td><span class="text-muted">1 Subscription</span></td>
                       <td class="mono-text">₹ 0.00</td>
-                      <td class="mono-text"><span class="text-muted">[GSTIN Placeholder]</span></td>
-                      <td><span class="badge badge-neutral">[Status]</span></td>
+                      <td class="mono-text"><span class="text-muted">27AAACA1234A1Z1</span></td>
+                      <td><span class="badge badge-neutral">Draft</span></td>
                       <td>
                         <button class="btn btn-secondary btn-sm" disabled>View Profile</button>
                       </td>
@@ -460,7 +471,7 @@
                   (e.g., Base ₹ 2,000 + Brand=Odoo surcharge ₹ 560 = Final Variant ₹ 2,560)
                 </span>
               </div>
-              <span class="badge badge-info">Odoo Compliant</span>
+              <span class="badge badge-neutral">Surcharge Rule</span>
             </div>
 
             <div class="card">
@@ -508,14 +519,14 @@
                         <button class="btn btn-secondary btn-sm">Edit Rules</button>
                       </td>
                     </tr>
-                    <!-- Backend integration placeholder row -->
+                    <!-- Configured SKU slot -->
                     <tr>
-                      <td><span class="text-muted">[Product Name Placeholder]</span></td>
-                      <td class="mono-text"><span class="text-muted">[SKU-CODE]</span></td>
-                      <td class="mono-text">₹ 0.00</td>
-                      <td><span class="text-muted">[Attributes & Surcharges]</span></td>
-                      <td class="mono-text"><span class="text-muted">₹ 0.00</span></td>
-                      <td><span class="badge badge-neutral">[Status]</span></td>
+                      <td><span class="text-muted">Enterprise Analytics Add-on</span></td>
+                      <td class="mono-text"><span class="text-muted">BL-PROD-ANALYTICS</span></td>
+                      <td class="mono-text">₹ 3,500 / mo</td>
+                      <td><span class="text-muted">Base Tier (+₹ 0)</span></td>
+                      <td class="mono-text"><span class="text-muted">₹ 3,500 / mo</span></td>
+                      <td><span class="badge badge-neutral">Draft</span></td>
                       <td><button class="btn btn-secondary btn-sm" disabled>Edit Rules</button></td>
                     </tr>
                   </tbody>
@@ -584,10 +595,10 @@
               </div>
             </div>
 
-            <!-- Empty plan template card for teammates -->
+            <!-- Custom cadence configuration card -->
             <div class="placeholder-box">
-              <strong>[Custom Plan Template Placeholder]</strong>
-              <p>Teammates can bind custom backend plan objects (Daily, Weekly, Bi-weekly, Custom Schedules) here.</p>
+              <strong>Custom Billing Cadence</strong>
+              <p>Supports custom recurring cycles (Quarterly, Semi-annual, or Milestone-based) via plan API.</p>
             </div>
           </section>
 
@@ -654,14 +665,14 @@
                         <button class="btn btn-secondary btn-sm" data-drawer="sub-drawer">Lifecycle Details</button>
                       </td>
                     </tr>
-                    <!-- Backend placeholder row -->
+                    <!-- Active contract slot -->
                     <tr>
-                      <td class="mono-text"><span class="text-muted">[SUB-CODE]</span></td>
-                      <td><span class="text-muted">[Customer Name Placeholder]</span></td>
-                      <td><span class="text-muted">[Plan Name Placeholder]</span></td>
-                      <td><span class="text-muted">[DD/MM/YYYY]</span></td>
-                      <td class="mono-text">₹ 0.00</td>
-                      <td><span class="badge badge-neutral">[Stage]</span></td>
+                      <td class="mono-text"><span class="text-muted">SUB-2026-003</span></td>
+                      <td><span class="text-muted">Apex Systems India</span></td>
+                      <td><span class="text-muted">Core Platform Tier</span></td>
+                      <td><span class="text-muted">10 Dec 2026</span></td>
+                      <td class="mono-text">₹ 4,999 / mo</td>
+                      <td><span class="badge badge-neutral">Draft</span></td>
                       <td><button class="btn btn-secondary btn-sm" disabled>Lifecycle Details</button></td>
                     </tr>
                   </tbody>
@@ -745,7 +756,7 @@
                 <strong>Duplicate Billing Guard:</strong>
                 <span>Idempotency tokens enforce that each subscription renewal period can generate only one finalized invoice.</span>
               </div>
-              <span class="badge badge-success">Guaranteed</span>
+              <span class="badge badge-neutral">Idempotency Lock</span>
             </div>
 
             <div class="card">
@@ -1032,13 +1043,13 @@
                       <td><span class="badge badge-info">Follow-up</span></td>
                       <td><button class="btn btn-secondary btn-sm">Match Invoice</button></td>
                     </tr>
-                    <!-- Placeholder row -->
+                    <!-- Anomaly audit slot -->
                     <tr>
-                      <td><span class="text-muted">[Anomaly Type Placeholder]</span></td>
-                      <td><span class="text-muted">[Entity Reference]</span></td>
-                      <td class="mono-text">₹ 0.00</td>
-                      <td><span class="text-muted">[Timestamp]</span></td>
-                      <td><span class="badge badge-neutral">[Severity]</span></td>
+                      <td><span class="text-muted">Unlinked Gateway Refund</span></td>
+                      <td><span class="text-muted">Transaction #GW-7712</span></td>
+                      <td class="mono-text">₹ 1,500</td>
+                      <td><span class="text-muted">3 days ago</span></td>
+                      <td><span class="badge badge-neutral">Low</span></td>
                       <td><button class="btn btn-secondary btn-sm" disabled>Remediate</button></td>
                     </tr>
                   </tbody>
@@ -1097,25 +1108,25 @@
             </div>
           </section>
 
-          <!-- 13. SUBSCRIPTION HEALTH & AI VIEW -->
+          <!-- 13. SUBSCRIPTION HEALTH & FINANCIAL INTELLIGENCE -->
           <section id="view-health" class="view-section">
             <div class="page-header">
               <div class="page-title">
-                <h2>Subscription Health & AI Intelligence</h2>
-                <p>Proactive retention scoring, early churn warnings and natural language finance queries</p>
+                <h2>Subscription Health & Revenue Intelligence</h2>
+                <p>Proactive retention scoring, early churn warnings and financial queries</p>
               </div>
             </div>
 
-            <!-- AI Query Box -->
+            <!-- Financial Intelligence Query Box -->
             <div class="card">
               <div class="card-header">
-                <div class="card-title">Brightloop AI Financial Assistant</div>
-                <span class="badge badge-info">LLM Ready</span>
+                <div class="card-title">Automated Financial Intelligence</div>
+                <span class="badge badge-neutral">Operational Analysis</span>
               </div>
               <div class="card-body">
                 <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-                  <input type="text" class="form-input" placeholder="Ask financial questions e.g. 'Show accounts with high churn probability before next billing cycle'..." style="flex: 1;" />
-                  <button class="btn btn-primary"><i data-lucide="sparkles"></i> Analyze</button>
+                  <input type="text" class="form-input" placeholder="Query recurring financial trends (e.g. 'Show accounts with high churn risk before renewal')..." style="flex: 1;" />
+                  <button class="btn btn-primary"><i data-lucide="search"></i> Run Query</button>
                 </div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                   <button class="btn btn-secondary btn-sm">What is our projected MRR next month?</button>
@@ -1206,14 +1217,14 @@
                       <td>2 hours ago</td>
                       <td><span class="badge badge-success">Active</span></td>
                     </tr>
-                    <!-- Placeholder row -->
+                    <!-- Staff member slot -->
                     <tr>
-                      <td><span class="text-muted">[Staff Name Placeholder]</span></td>
-                      <td><span class="text-muted">[staff@company.com]</span></td>
-                      <td><span class="badge badge-neutral">[Role Placeholder]</span></td>
-                      <td><span class="text-muted">[Department]</span></td>
-                      <td><span class="text-muted">[Timestamp]</span></td>
-                      <td><span class="badge badge-neutral">[Status]</span></td>
+                      <td><span class="text-muted">Ananya Iyer</span></td>
+                      <td><span class="text-muted">ananya@brightloop.io</span></td>
+                      <td><span class="badge badge-neutral">STAFF</span></td>
+                      <td><span class="text-muted">Customer Success</span></td>
+                      <td><span class="text-muted">Yesterday</span></td>
+                      <td><span class="badge badge-neutral">Invited</span></td>
                     </tr>
                   </tbody>
                 </table>
@@ -1225,11 +1236,30 @@
           <section id="view-portal" class="view-section">
             <div class="page-header">
               <div class="page-title">
-                <h2>Customer Self-Service Portal Preview</h2>
-                <p>Dedicated subscriber portal to view invoices, update cards, or request pause / renewal</p>
+                <h2 id="portal-header-title">Customer Self-Service Portal</h2>
+                <p id="portal-header-sub">Dedicated subscriber dashboard to view active subscriptions, billing schedules, and download invoices</p>
               </div>
               <div class="header-actions">
-                <span class="badge badge-info">Viewing as Client</span>
+                <span class="badge badge-success" id="portal-account-badge"><i data-lucide="check-circle" style="width: 12px; height: 12px;"></i> Active Subscriber</span>
+              </div>
+            </div>
+
+            <!-- Company Profile Banner -->
+            <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(99, 91, 255, 0.05) 0%, rgba(10, 37, 64, 0.03) 100%); border-left: 4px solid var(--primary);">
+              <div class="card-body" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+                <div>
+                  <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--primary); letter-spacing: 0.5px;">Authorized Company Profile</div>
+                  <div id="portal-company-name" style="font-size: 20px; font-weight: 700; color: var(--text-main); margin-top: 2px;">Acme Tech Solutions</div>
+                  <div id="portal-contact-info" style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">
+                    <span id="portal-contact-name">Alex Sharma</span> &bull; <span id="portal-contact-email">alex@acme.com</span>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                  <div style="text-align: right;">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Portal Access Level</div>
+                    <div style="font-size: 13px; font-weight: 600; color: var(--text-main);" id="portal-role-label">Customer Account</div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -1237,14 +1267,15 @@
               <div class="card">
                 <div class="card-header">
                   <div class="card-title">My Active Subscriptions</div>
+                  <span class="badge badge-success" id="portal-sub-badge">Active</span>
                 </div>
                 <div class="card-body">
-                  <div style="font-size: 16px; font-weight: 600;">Brightloop Enterprise Cloud</div>
-                  <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">Billing cycle: Monthly (Next renewal: 15 Nov 2026)</div>
-                  <div style="font-size: 20px; font-weight: 700; margin: 12px 0;">₹ 18,500 / month</div>
+                  <div id="portal-sub-name" style="font-size: 16px; font-weight: 600;">Brightloop Enterprise Cloud</div>
+                  <div id="portal-sub-cycle" style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">Billing cycle: Monthly (Next renewal: 15 Nov 2026)</div>
+                  <div id="portal-sub-price" style="font-size: 20px; font-weight: 700; margin: 12px 0;">₹ 18,500 / month</div>
                   <div style="display: flex; gap: 10px; margin-top: 14px;">
-                    <button class="btn btn-secondary btn-sm">Request Pause</button>
-                    <button class="btn btn-secondary btn-sm" style="color: var(--danger);">Cancel Subscription</button>
+                    <button class="btn btn-secondary btn-sm" id="portal-pause-btn">Request Pause</button>
+                    <button class="btn btn-secondary btn-sm" id="portal-cancel-btn" style="color: var(--danger);">Cancel Subscription</button>
                   </div>
                 </div>
               </div>
@@ -1253,11 +1284,11 @@
                 <div class="card-header">
                   <div class="card-title">Recent Invoices & Receipts</div>
                 </div>
-                <div class="card-body">
+                <div class="card-body" id="portal-invoices-container">
                   <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border);">
                     <div>
-                      <div class="mono-text" style="font-weight: 600;">BL-INV-2026-001</div>
-                      <div style="font-size: 12px; color: var(--text-muted);">01 Nov 2026 • ₹ 11,800</div>
+                      <div class="mono-text" style="font-weight: 600;" id="portal-inv-number">BL-INV-2026-001</div>
+                      <div style="font-size: 12px; color: var(--text-muted);" id="portal-inv-meta">01 Nov 2026 • ₹ 11,800 • Dual-GST Paid</div>
                     </div>
                     <button class="btn btn-secondary btn-sm" data-modal="invoice-preview-modal"><i data-lucide="download"></i> PDF</button>
                   </div>
@@ -1318,7 +1349,7 @@
       </div>
     </div>
 
-    <!-- Split-Screen Auth View (Login / Register / Forgot Password) -->
+    <!-- Split-Screen Auth View (Sign In / Register / Forgot Password / Home Landing) -->
     <div id="view-auth" class="auth-page">
       <div class="auth-hero">
         <div class="auth-hero-header">
@@ -1328,38 +1359,185 @@
         <div class="auth-hero-content">
           <h2>Subscription Operations. Simplified. Revenue Intelligence. Amplified.</h2>
           <p>Enterprise subscription billing, dynamic variant configuration and revenue leakage protection built for modern B2B SaaS.</p>
+
+          <div style="margin-top: 32px; display: flex; flex-direction: column; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #adbdcc;">
+              <i data-lucide="check-circle" style="color: #635bff; width: 16px; height: 16px;"></i>
+              <span>Dual-GST recurring invoice generation & reconciliation</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #adbdcc;">
+              <i data-lucide="check-circle" style="color: #635bff; width: 16px; height: 16px;"></i>
+              <span>Dynamic pricing rules with attribute surcharges</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #adbdcc;">
+              <i data-lucide="check-circle" style="color: #635bff; width: 16px; height: 16px;"></i>
+              <span>Automated revenue leakage detection & dunning guards</span>
+            </div>
+          </div>
         </div>
         <div style="font-size: 12px; color: #8898aa;">
-          &copy; 2026 Brightloop Software. Odoo Hackathon Edition.
+          &copy; 2026 Brightloop Software Inc. All rights reserved.
         </div>
       </div>
 
       <div class="auth-form-wrapper">
         <div class="auth-card">
-          <h3>Sign in to Brightloop</h3>
-          <p class="subtitle">Access your subscription dashboard and financial operations</p>
+          <!-- Auth Mode Navigation Tabs -->
+          <div style="display: flex; gap: 20px; border-bottom: 1px solid var(--border); margin-bottom: 24px;">
+            <button type="button" id="tab-btn-login" class="auth-tab-btn active">Sign In</button>
+            <button type="button" id="tab-btn-register" class="auth-tab-btn">Register</button>
+            <button type="button" id="tab-btn-forgot" class="auth-tab-btn">Forgot Password</button>
+          </div>
 
-          <form id="auth-login-form" onsubmit="event.preventDefault(); document.getElementById('view-auth').classList.remove('active'); document.getElementById('app').style.display='flex';">
-            <div class="form-group">
-              <label class="form-label">Work Email</label>
-              <input type="email" class="form-input" placeholder="name@company.com" required style="width: 100%;" />
-            </div>
+          <!-- Sign In Panel -->
+          <div id="auth-panel-login">
+            <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 4px;">Sign in to Brightloop</h3>
+            <p class="subtitle" style="margin-bottom: 16px;">Access your subscription dashboard and financial operations</p>
 
-            <div class="form-group">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <label class="form-label" style="margin-bottom: 0;">Password</label>
-                <a href="#" style="font-size: 12px; color: var(--primary); text-decoration: none;">Forgot password?</a>
+            <div id="login-alert" class="auth-alert"></div>
+
+            <form id="auth-login-form">
+              <div class="form-group">
+                <label class="form-label">Work Email</label>
+                <input type="email" id="login-email-input" class="form-input" placeholder="admin@brightloop.io" value="admin@brightloop.io" required style="width: 100%;" />
               </div>
-              <input type="password" class="form-input" placeholder="••••••••" required style="width: 100%;" />
+
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <label class="form-label" style="margin-bottom: 0;">Password</label>
+                  <a href="#" id="link-to-forgot" style="font-size: 12px; color: var(--primary); text-decoration: none;">Forgot password?</a>
+                </div>
+                <div style="position: relative;">
+                  <input type="password" id="login-password-input" class="form-input" placeholder="••••••••••••" value="Brightloop@2026" required style="width: 100%; padding-right: 38px;" />
+                  <button type="button" id="toggle-password-btn" title="Toggle password visibility" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center;">
+                    <i data-lucide="eye" style="width: 15px; height: 15px;"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); cursor: pointer;">
+                  <input type="checkbox" checked /> Remember this device
+                </label>
+              </div>
+
+              <button type="submit" id="login-submit-btn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 9px;">
+                Sign In
+              </button>
+            </form>
+
+            <div style="margin-top: 20px; text-align: center; font-size: 13px; color: var(--text-secondary);">
+              Don't have an account? <a href="#" id="link-to-register" style="color: var(--primary); text-decoration: none; font-weight: 500;">Register company</a>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 10px;">
-              Sign In
-            </button>
-          </form>
+            <div style="margin-top: 16px; text-align: center; font-size: 13px;">
+              <a href="#" class="auth-back-to-home-btn" style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); text-decoration: none;">
+                <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i> Return to Homepage
+              </a>
+            </div>
+          </div>
 
-          <div style="margin-top: 24px; text-align: center; font-size: 13px; color: var(--text-secondary);">
-            Don't have an account? <a href="#" style="color: var(--primary); text-decoration: none; font-weight: 500;">Register company</a>
+          <!-- Register Panel -->
+          <div id="auth-panel-register" style="display: none;">
+            <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 4px;">Create Company Account</h3>
+            <p class="subtitle" style="margin-bottom: 16px;">Deploy your enterprise subscription operations workspace</p>
+
+            <div id="reg-alert" class="auth-alert"></div>
+
+            <form id="auth-register-form">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" id="reg-fullname" class="form-input" placeholder="e.g. Alex Sharma" required style="width: 100%;" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Business / Company Name</label>
+                <input type="text" id="reg-company" class="form-input" placeholder="e.g. Acme Tech Solutions" required style="width: 100%;" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Work Email</label>
+                <input type="email" id="reg-email" class="form-input" placeholder="name@company.com" required style="width: 100%;" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Password</label>
+                <div style="position: relative;">
+                  <input type="password" id="reg-password" class="form-input" placeholder="Create a strong password" required style="width: 100%; padding-right: 38px;" autocomplete="new-password" />
+                  <button type="button" id="toggle-reg-password-btn" title="Toggle password visibility" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center;">
+                    <i data-lucide="eye" style="width: 15px; height: 15px;"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirm Password</label>
+                <input type="password" id="reg-confirm-password" class="form-input" placeholder="Re-enter your password" required style="width: 100%;" autocomplete="new-password" />
+              </div>
+
+              <!-- Real-time Password Security Criteria Box -->
+              <div class="password-criteria-box" id="password-criteria-box">
+                <div class="criteria-title">Password Security Requirements</div>
+                <div class="criteria-list">
+                  <div class="criterion-item invalid" id="crit-length">
+                    <span class="crit-bullet"></span>
+                    <span>Minimum 8 characters</span>
+                  </div>
+                  <div class="criterion-item invalid" id="crit-upper">
+                    <span class="crit-bullet"></span>
+                    <span>At least 1 uppercase letter (A-Z)</span>
+                  </div>
+                  <div class="criterion-item invalid" id="crit-lower">
+                    <span class="crit-bullet"></span>
+                    <span>At least 1 lowercase letter (a-z)</span>
+                  </div>
+                  <div class="criterion-item invalid" id="crit-number">
+                    <span class="crit-bullet"></span>
+                    <span>At least 1 number (0-9)</span>
+                  </div>
+                  <div class="criterion-item invalid" id="crit-special">
+                    <span class="crit-bullet"></span>
+                    <span>At least 1 special character (!@#$%^&*)</span>
+                  </div>
+                  <div class="criterion-item invalid" id="crit-match">
+                    <span class="crit-bullet"></span>
+                    <span>Passwords match</span>
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" id="reg-submit-btn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 9px; margin-top: 14px;" disabled>
+                Create Account
+              </button>
+            </form>
+
+            <div style="margin-top: 20px; text-align: center; font-size: 13px; color: var(--text-secondary);">
+              Already have an account? <a href="#" id="link-to-login" style="color: var(--primary); text-decoration: none; font-weight: 500;">Sign in here</a>
+            </div>
+
+            <div style="margin-top: 16px; text-align: center; font-size: 13px;">
+              <a href="#" class="auth-back-to-home-btn" style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); text-decoration: none;">
+                <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i> Return to Homepage
+              </a>
+            </div>
+          </div>
+
+          <!-- Forgot Password Panel -->
+          <div id="auth-panel-forgot" style="display: none;">
+            <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 4px;">Reset Password</h3>
+            <p class="subtitle" style="margin-bottom: 20px;">Enter your registered work email to receive reset instructions</p>
+
+            <form id="auth-forgot-form">
+              <div class="form-group">
+                <label class="form-label">Registered Email</label>
+                <input type="email" class="form-input" placeholder="name@company.com" required style="width: 100%;" />
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 9px; margin-top: 6px;">
+                Send Reset Link
+              </button>
+            </form>
+
+            <div style="margin-top: 20px; text-align: center; font-size: 13px;">
+              <a href="#" class="auth-back-to-home-btn" style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); text-decoration: none;">
+                <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i> Return to Homepage
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -1655,6 +1833,244 @@
           <div class="mono-text" style="font-size: 11px; color: var(--text-muted);">tok_stripe_idempotent_98293f0a</div>
         </div>
       </div>
+    </div>
+
+    <!-- Public Hero Section Homepage -->
+    <div id="view-home" class="home-page">
+      <!-- Navbar -->
+      <header class="home-navbar">
+        <div style="display: flex; align-items: center; gap: 10px; cursor: pointer;" data-nav="home">
+          <div class="brand-icon">B</div>
+          <div style="font-weight: 700; font-size: 16px; color: var(--text-main); letter-spacing: -0.3px;">Brightloop Software</div>
+        </div>
+
+        <nav class="home-nav-links">
+          <a href="#features" class="home-nav-link">Features</a>
+          <a href="#pricing" class="home-nav-link">Pricing Plans</a>
+          <a href="#sentinel" class="home-nav-link">Revenue Sentinel</a>
+          <a href="#compliance" class="home-nav-link">Dual-GST</a>
+        </nav>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button class="btn btn-secondary" data-nav="auth">
+            <i data-lucide="log-in"></i> Sign In
+          </button>
+          <button class="btn btn-primary" data-action="launch-dashboard">
+            <i data-lucide="layout-dashboard"></i> Launch App
+          </button>
+        </div>
+      </header>
+
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span>Intelligent Subscription & Revenue Operations Platform</span>
+        </div>
+
+        <h1 class="hero-title">
+          Subscription Operations. Simplified.<br />
+          <span class="gradient-text">Revenue Intelligence. Amplified.</span>
+        </h1>
+
+        <p class="hero-subtitle">
+          The all-in-one revenue platform to orchestrate recurring billing, dynamic product variants with attribute surcharges, automated dual-GST invoicing, and continuous revenue leakage detection.
+        </p>
+
+        <div class="hero-cta-group">
+          <button class="btn btn-primary btn-lg" data-action="launch-dashboard">
+            <i data-lucide="layout-dashboard"></i> Launch Dashboard
+          </button>
+          <button class="btn btn-secondary btn-lg" data-nav="auth">
+            <i data-lucide="log-in"></i> Sign In to Account
+          </button>
+        </div>
+
+        <!-- High-Fidelity Stripe-Style Dashboard Preview Mockup -->
+        <div class="hero-mockup-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="width: 10px; height: 10px; border-radius: 50%; background: #00875a; display: inline-block;"></span>
+              <strong style="font-size: 13px; color: var(--text-main);">Live Revenue Engine: All Billing Cadences Synchronized</strong>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <span class="badge badge-neutral">Idempotency Token Active</span>
+              <span class="badge badge-neutral">Dual-GST Compliant</span>
+            </div>
+          </div>
+
+          <div class="kpi-grid" style="margin-bottom: 20px;">
+            <div class="kpi-card" style="box-shadow: none; border-color: var(--border-subtle);">
+              <div class="kpi-header"><span class="kpi-label">Monthly Recurring Revenue</span></div>
+              <div class="kpi-value">₹ 2,45,000</div>
+              <div class="kpi-trend"><span class="trend-up">+12.4%</span> <span class="trend-sub">vs last month</span></div>
+            </div>
+            <div class="kpi-card" style="box-shadow: none; border-color: var(--border-subtle);">
+              <div class="kpi-header"><span class="kpi-label">Annualized Run Rate</span></div>
+              <div class="kpi-value">₹ 29,40,000</div>
+              <div class="kpi-trend"><span class="trend-up">Paced</span> <span class="trend-sub">annual forecast</span></div>
+            </div>
+            <div class="kpi-card" style="box-shadow: none; border-color: var(--border-subtle);">
+              <div class="kpi-header"><span class="kpi-label">Active Subscriptions</span></div>
+              <div class="kpi-value">128</div>
+              <div class="kpi-trend"><span class="trend-up">+8</span> <span class="trend-sub">this billing cycle</span></div>
+            </div>
+            <div class="kpi-card" style="box-shadow: none; border-color: var(--border-subtle);">
+              <div class="kpi-header"><span class="kpi-label">Revenue at Risk Recovered</span></div>
+              <div class="kpi-value" style="color: var(--success);">₹ 48,700</div>
+              <div class="kpi-trend"><span class="trend-sub">Sentinel protected</span></div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Subscription ID</th>
+                  <th>Customer</th>
+                  <th>Plan Tier</th>
+                  <th>Dynamic Variant Calculation</th>
+                  <th>Billing Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="mono-text">SUB-2026-001</td>
+                  <td>Acme Technologies Ltd</td>
+                  <td>Enterprise Growth</td>
+                  <td>Base ₹2,000 + Brand=Odoo ₹560</td>
+                  <td class="mono-text"><strong>₹ 18,500 / mo</strong></td>
+                  <td><span class="badge badge-success">Active</span></td>
+                </tr>
+                <tr>
+                  <td class="mono-text">SUB-2026-002</td>
+                  <td>Nexus Digital Media</td>
+                  <td>Standard Business</td>
+                  <td>Base ₹1,500 + Standard Support</td>
+                  <td class="mono-text"><strong>₹ 1,20,000 / yr</strong></td>
+                  <td><span class="badge badge-success">Active</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Key Pillars Section -->
+      <section id="features" class="home-container">
+        <div class="section-header-center">
+          <h3>Architected for High-Precision Subscription Operations</h3>
+          <p>Every operational capability required to run recurring contracts, compute dynamic variant surcharges, and protect cash flow.</p>
+        </div>
+
+        <div class="features-grid-4">
+          <div class="feature-box">
+            <div class="feature-box-icon"><i data-lucide="layers"></i></div>
+            <h4>Dynamic Variant Pricing</h4>
+            <p>Compute variant prices mathematically without catalog bloat: <code>Final = Base + Surcharges</code> (e.g. Base ₹2,000 + Brand=Odoo ₹560 = Final ₹2,560).</p>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-box-icon"><i data-lucide="receipt"></i></div>
+            <h4>Dual-GST Recurring Invoicing</h4>
+            <p>Automate CGST (9%) + SGST (9%) for intra-state and IGST (18%) for inter-state subscribers with idempotency duplicate protection.</p>
+          </div>
+
+          <div class="feature-box" id="sentinel">
+            <div class="feature-box-icon"><i data-lucide="shield-alert"></i></div>
+            <h4>Revenue Leakage Sentinel</h4>
+            <p>Scan real-time anomalies: unbilled active renewals, expired promo codes still being applied, and unlinked bank reconciliations.</p>
+          </div>
+
+          <div class="feature-box" id="compliance">
+            <div class="feature-box-icon"><i data-lucide="repeat"></i></div>
+            <h4>Contract Lifecycle States</h4>
+            <p>Full transition management: <code>Draft → Quotation → Confirmed → Active → Closed</code> with automated pause and renewal rules.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pricing Plans Section -->
+      <section id="pricing" class="home-container" style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 60px;">
+        <div class="section-header-center">
+          <h3>Transparent, Scalable Pricing</h3>
+          <p>Deploy enterprise recurring billing and revenue operations tailored to your SaaS scale.</p>
+        </div>
+
+        <div class="grid-2" style="max-width: 860px; margin: 0 auto;">
+          <div class="card" style="border: 2px solid var(--border);">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Standard Monthly Tier</div>
+                <div class="card-subtitle">Ideal for growing SaaS startups</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div style="font-size: 32px; font-weight: 800; margin-bottom: 14px;">₹ 4,999 <span style="font-size: 14px; font-weight: normal; color: var(--text-muted);">/ month</span></div>
+              <ul style="list-style: none; padding: 0; line-height: 2; font-size: 13px; color: var(--text-secondary);">
+                <li>✓ Unlimited product variants & pricing rules</li>
+                <li>✓ Automated Dual-GST invoice generation</li>
+                <li>✓ Up to 500 active subscriptions</li>
+                <li>✓ Standard Revenue Leakage Sentinel</li>
+              </ul>
+              <button class="btn btn-secondary" style="width: 100%; justify-content: center; margin-top: 24px;" data-action="register">
+                Get Started
+              </button>
+            </div>
+          </div>
+
+          <div class="card" style="border: 2px solid var(--primary); position: relative;">
+            <div style="position: absolute; top: -11px; right: 20px; background: var(--primary); color: #fff; font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 2px 10px; border-radius: 10px;">
+              Most Popular
+            </div>
+            <div class="card-header">
+              <div>
+                <div class="card-title">Enterprise Annual Tier</div>
+                <div class="card-subtitle">Full operations & revenue intelligence</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div style="font-size: 32px; font-weight: 800; margin-bottom: 14px;">₹ 49,999 <span style="font-size: 14px; font-weight: normal; color: var(--text-muted);">/ year</span></div>
+              <ul style="list-style: none; padding: 0; line-height: 2; font-size: 13px; color: var(--text-secondary);">
+                <li>✓ Everything in Standard plus priority engine</li>
+                <li>✓ Idempotent multi-gateway payment reconciliation</li>
+                <li>✓ Unlimited subscriptions & customer accounts</li>
+                <li>✓ Real-time Automated Financial Intelligence</li>
+              </ul>
+              <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 24px;" data-action="register">
+                Deploy Enterprise
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Call To Action Banner -->
+      <div class="home-container" style="padding-top: 0;">
+        <div class="cta-banner">
+          <h3>Streamline Your Recurring Revenue Operations</h3>
+          <p>Start tracking subscription lifecycles, eliminate billing leakage, and issue dual-GST invoices seamlessly.</p>
+          <div style="display: flex; justify-content: center; gap: 14px;">
+            <button class="btn btn-primary btn-lg" style="background: #ffffff; color: var(--text-main);" data-action="launch-dashboard">
+              Launch Dashboard
+            </button>
+            <button class="btn btn-secondary btn-lg" style="background: transparent; border-color: rgba(255,255,255,0.3); color: #ffffff;" data-nav="auth">
+              Sign In
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="home-footer">
+        <div>
+          <strong>Brightloop Software</strong> — Subscription Operations & Revenue Intelligence
+        </div>
+        <div>
+          &copy; 2026 Brightloop Software Inc. All rights reserved.
+        </div>
+      </footer>
     </div>
 
     <!-- Application Script -->

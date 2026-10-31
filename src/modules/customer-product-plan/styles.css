@@ -1,0 +1,448 @@
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast-item {
+  pointer-events: auto;
+  min-width: 280px;
+  max-width: 420px;
+  background: #0a2540;
+  color: #ffffff;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  animation: toastSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  border-left: 4px solid var(--primary);
+}
+
+.toast-item.toast-success {
+  border-left-color: #00d4ff;
+}
+
+.toast-item.toast-error {
+  border-left-color: var(--danger);
+}
+
+.toast-item.toast-info {
+  border-left-color: var(--primary);
+}
+
+.toast-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  margin-right: 8px;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: #adbdcc;
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.toast-close:hover {
+  color: #ffffff;
+}
+
+.toast-item.fade-out {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Namespaced Customer Table & Drawer */
+.customer-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f4f3ff;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.customer-cell {
+  display: flex;
+  align-items: center;
+}
+
+.customer-company-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 2px;
+}
+
+/* Pagination controls */
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  background: #fafbfc;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.pagination-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.pagination-btn {
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: all 0.15s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: var(--bg-page);
+  border-color: #cbd4db;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-btn.active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+/* Customer Profile Drawer enhancements */
+.customer-drawer-kpis {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.customer-kpi-card {
+  background: #fafbfc;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+
+.customer-kpi-card .kpi-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  margin-bottom: 4px;
+}
+
+.customer-kpi-card .kpi-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.customer-drawer-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+  gap: 18px;
+}
+
+.customer-drawer-tab {
+  padding: 8px 0;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.customer-drawer-tab:hover {
+  color: var(--text-main);
+}
+
+.customer-drawer-tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 600;
+}
+
+.customer-tab-pane {
+  display: none;
+}
+
+.customer-tab-pane.active {
+  display: block;
+}
+
+/* Timeline & Activities */
+.timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 10px;
+  position: relative;
+  font-size: 12px;
+}
+
+.timeline-bullet {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+.timeline-content {
+  flex: 1;
+}
+
+.timeline-title {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.timeline-time {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Product Dynamic Variant Cards & Tables */
+.product-variant-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: #f4f6f8;
+  border: 1px solid #e3e8ee;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  margin: 2px;
+}
+
+.product-variant-chip strong {
+  color: var(--text-main);
+}
+
+.product-variant-chip .surcharge-badge {
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.product-variant-list-editor {
+  background: #fafbfc;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-top: 10px;
+}
+
+.variant-row-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.variant-row-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Plan Card Grid & Controls */
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.plan-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-xs);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+}
+
+.plan-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: #cbd4db;
+}
+
+.plan-card.plan-inactive {
+  opacity: 0.75;
+  background: #fbfcfd;
+}
+
+.plan-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.plan-price-display {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.plan-price-unit {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.plan-feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 16px 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.plan-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.plan-feature-item i {
+  color: var(--success);
+  width: 14px;
+  height: 14px;
+}
+
+.plan-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 14px;
+  margin-top: 10px;
+}
+
+/* Empty State Component */
+.empty-state-container {
+  padding: 48px 20px;
+  text-align: center;
+}
+
+.empty-state-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 12px auto;
+  color: var(--text-muted);
+  stroke-width: 1.5;
+}
+
+.empty-state-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.empty-state-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 360px;
+  margin: 0 auto 16px auto;
+}
+
+/* Confirmation Dialog */
+.confirm-dialog-content {
+  text-align: center;
+  padding: 16px 0;
+}
+
+.confirm-dialog-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffebef;
+  color: var(--danger);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.confirm-dialog-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.confirm-dialog-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
