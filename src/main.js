@@ -1,7 +1,15 @@
 import { createIcons, icons } from 'lucide';
 import Chart from 'chart.js/auto';
+import './modules/customer-product-plan/styles.css';
+import { initCustomerProductPlanModule } from './modules/customer-product-plan/index.js';
+import './modules/quotations-subscriptions/quotations-subscriptions.css';
+import { initQuoteSubscriptionModule } from './modules/quotations-subscriptions/index.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize Module 01
+  initCustomerProductPlanModule();
+  initQuoteSubscriptionModule();
+
   // Initialize Lucide icons
   createIcons({ icons });
 
