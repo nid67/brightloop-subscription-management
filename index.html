@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/src/styles/styles.css" />
+    <link rel="stylesheet" href="/src/styles/module-auth.css" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23635BFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='m8 12 3 3 5-5'/></svg>" />
   </head>
   <body>
@@ -1169,52 +1170,112 @@
             <div class="page-header">
               <div class="page-title">
                 <h2>Staff & Role-Based Access Control</h2>
-                <p>Manage team members and enforce role permissions across Admin, Staff, and Customer tiers</p>
+                <p>Manage internal team members, assign operational roles, and enforce RBAC policies across tiers</p>
               </div>
               <div class="header-actions">
-                <button class="btn btn-primary"><i data-lucide="user-plus"></i> Invite Staff</button>
+                <button class="btn btn-primary" data-modal="add-staff-modal"><i data-lucide="user-plus"></i> Invite Staff</button>
               </div>
             </div>
 
-            <div class="card">
+            <!-- Staff KPI Grid -->
+            <div class="staff-stats-grid">
+              <div class="kpi-card" style="margin-bottom: 0;">
+                <div class="kpi-header">
+                  <span class="kpi-label">Total Team Members</span>
+                  <i data-lucide="users" class="kpi-icon"></i>
+                </div>
+                <div class="kpi-value" id="staff-stat-total">0</div>
+                <div class="kpi-trend">
+                  <span class="trend-sub">&bull; Active directory</span>
+                </div>
+              </div>
+
+              <div class="kpi-card" style="margin-bottom: 0;">
+                <div class="kpi-header">
+                  <span class="kpi-label">Super Admins</span>
+                  <i data-lucide="shield-check" class="kpi-icon"></i>
+                </div>
+                <div class="kpi-value" id="staff-stat-admins">0</div>
+                <div class="kpi-trend">
+                  <span class="trend-sub">Full system privilege</span>
+                </div>
+              </div>
+
+              <div class="kpi-card" style="margin-bottom: 0;">
+                <div class="kpi-header">
+                  <span class="kpi-label">Operations Staff</span>
+                  <i data-lucide="user-check" class="kpi-icon"></i>
+                </div>
+                <div class="kpi-value" id="staff-stat-staff">0</div>
+                <div class="kpi-trend">
+                  <span class="trend-sub">Billing & CustOps</span>
+                </div>
+              </div>
+
+              <div class="kpi-card" style="margin-bottom: 0;">
+                <div class="kpi-header">
+                  <span class="kpi-label">Suspended / Inactive</span>
+                  <i data-lucide="user-x" class="kpi-icon"></i>
+                </div>
+                <div class="kpi-value" id="staff-stat-inactive">0</div>
+                <div class="kpi-trend">
+                  <span class="trend-sub">&bull; Access revoked</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="card" style="margin-top: 16px;">
+              <div class="filter-bar">
+                <div class="filter-left" style="flex: 1; max-width: 320px;">
+                  <div class="search-box" style="width: 100%;">
+                    <i data-lucide="search"></i>
+                    <input type="text" id="staff-search-input" placeholder="Search staff by name, email, department..." />
+                  </div>
+                </div>
+                <div class="filter-right">
+                  <select id="staff-role-filter" class="form-select">
+                    <option value="ALL">All Roles</option>
+                    <option value="ADMIN">Admin Only</option>
+                    <option value="STAFF">Staff Only</option>
+                  </select>
+
+                  <select id="staff-dept-filter" class="form-select">
+                    <option value="ALL">All Departments</option>
+                    <option value="Operations">Operations</option>
+                    <option value="Finance & Billing">Finance & Billing</option>
+                    <option value="Customer Success">Customer Success</option>
+                    <option value="Engineering Ops">Engineering Ops</option>
+                    <option value="RevOps & Audit">RevOps & Audit</option>
+                  </select>
+
+                  <select id="staff-status-filter" class="form-select">
+                    <option value="ALL">All Statuses</option>
+                    <option value="Active">Active Only</option>
+                    <option value="Inactive">Inactive Only</option>
+                  </select>
+
+                  <button id="staff-reset-filters" class="btn btn-secondary btn-sm" title="Clear all search filters">
+                    Reset
+                  </button>
+                </div>
+              </div>
+
               <div class="table-container">
                 <table class="data-table">
                   <thead>
                     <tr>
                       <th>Staff Member</th>
-                      <th>Email</th>
+                      <th>Contact Email</th>
                       <th>Assigned Role</th>
                       <th>Department</th>
                       <th>Last Active</th>
-                      <th>Status</th>
+                      <th>Account Status</th>
+                      <th style="text-align: right;">Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <td><strong>Nidhin (You)</strong></td>
-                      <td>admin@brightloop.io</td>
-                      <td><span class="badge badge-info">ADMIN</span></td>
-                      <td>Operations</td>
-                      <td>Just now</td>
-                      <td><span class="badge badge-success">Active</span></td>
-                    </tr>
-                    <tr>
-                      <td><strong>Billing Operator</strong></td>
-                      <td>staff@brightloop.io</td>
-                      <td><span class="badge badge-neutral">STAFF</span></td>
-                      <td>Finance</td>
-                      <td>2 hours ago</td>
-                      <td><span class="badge badge-success">Active</span></td>
-                    </tr>
-                    <!-- Placeholder row -->
-                    <tr>
-                      <td><span class="text-muted">[Staff Name Placeholder]</span></td>
-                      <td><span class="text-muted">[staff@company.com]</span></td>
-                      <td><span class="badge badge-neutral">[Role Placeholder]</span></td>
-                      <td><span class="text-muted">[Department]</span></td>
-                      <td><span class="text-muted">[Timestamp]</span></td>
-                      <td><span class="badge badge-neutral">[Status]</span></td>
-                    </tr>
+                  <tbody id="staff-table-body">
+                    <!-- Dynamic rendering by staff.js -->
                   </tbody>
                 </table>
               </div>
@@ -1225,41 +1286,100 @@
           <section id="view-portal" class="view-section">
             <div class="page-header">
               <div class="page-title">
-                <h2>Customer Self-Service Portal Preview</h2>
-                <p>Dedicated subscriber portal to view invoices, update cards, or request pause / renewal</p>
+                <h2>Customer Self-Service Portal</h2>
+                <p>Subscriber management console: review active plans, request renewals, adjust billing, and inspect tax invoices</p>
               </div>
               <div class="header-actions">
-                <span class="badge badge-info">Viewing as Client</span>
+                <span class="badge badge-info" id="portal-viewing-badge"><i data-lucide="shield"></i> Authenticated Subscriber</span>
               </div>
             </div>
 
-            <div class="grid-2">
-              <div class="card">
-                <div class="card-header">
-                  <div class="card-title">My Active Subscriptions</div>
-                </div>
-                <div class="card-body">
-                  <div style="font-size: 16px; font-weight: 600;">Brightloop Enterprise Cloud</div>
-                  <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">Billing cycle: Monthly (Next renewal: 15 Nov 2026)</div>
-                  <div style="font-size: 20px; font-weight: 700; margin: 12px 0;">₹ 18,500 / month</div>
-                  <div style="display: flex; gap: 10px; margin-top: 14px;">
-                    <button class="btn btn-secondary btn-sm">Request Pause</button>
-                    <button class="btn btn-secondary btn-sm" style="color: var(--danger);">Cancel Subscription</button>
-                  </div>
+            <!-- Customer Identity & Plan Banner -->
+            <div class="portal-profile-banner">
+              <div class="portal-profile-identity">
+                <div class="portal-profile-avatar" id="portal-banner-avatar">CU</div>
+                <div class="portal-profile-meta">
+                  <h3 id="portal-banner-company">Subscriber Account</h3>
+                  <p id="portal-banner-user">No authenticated subscriber</p>
+                  <p id="portal-banner-gstin" class="mono-text" style="color: var(--text-muted); margin-top: 2px;">GSTIN: Not Registered</p>
                 </div>
               </div>
 
+              <div class="portal-profile-summary-pills">
+                <div class="portal-summary-pill">
+                  <div class="label">Active Subscriptions</div>
+                  <div class="val" id="portal-banner-sub-count">0 Plans</div>
+                </div>
+                <div class="portal-summary-pill">
+                  <div class="label">Next Billing Date</div>
+                  <div class="val" id="portal-banner-next-billing" style="color: var(--text-muted);">None Scheduled</div>
+                </div>
+                <div class="portal-summary-pill">
+                  <div class="label">Balance Due</div>
+                  <div class="val" style="color: var(--success);">&#8377; 0.00</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Customer Navigation Tabs -->
+            <div class="portal-tabs-nav">
+              <button class="portal-tab-btn active" data-portal-tab="subscriptions">
+                <i data-lucide="repeat"></i> Active Subscriptions
+              </button>
+              <button class="portal-tab-btn" data-portal-tab="invoices">
+                <i data-lucide="receipt"></i> Invoices & Receipts
+              </button>
+              <button class="portal-tab-btn" data-portal-tab="requests">
+                <i data-lucide="clock"></i> Service & Change Requests
+              </button>
+            </div>
+
+            <!-- Tab 1: Subscriptions List -->
+            <div id="portal-pane-subscriptions" class="portal-tab-pane active">
+              <div id="portal-subscriptions-list">
+                <!-- Rendered dynamically by portal.js -->
+              </div>
+            </div>
+
+            <!-- Tab 2: Invoices List -->
+            <div id="portal-pane-invoices" class="portal-tab-pane">
               <div class="card">
                 <div class="card-header">
-                  <div class="card-title">Recent Invoices & Receipts</div>
+                  <div class="card-title">Recurring Invoices & Dual-GST Tax Records</div>
+                  <div class="card-subtitle">All tax invoices generated for Acme Technologies Ltd</div>
+                </div>
+                <div class="table-container">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Invoice Number</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Taxable Base</th>
+                        <th>Dual-GST (9%+9%)</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Tax Receipt</th>
+                      </tr>
+                    </thead>
+                    <tbody id="portal-invoices-body">
+                      <!-- Rendered dynamically by portal.js -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 3: Service Requests -->
+            <div id="portal-pane-requests" class="portal-tab-pane">
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">Recent Lifecycle & Support Requests</div>
+                  <div class="card-subtitle">Track the status of your pause, cancellation, or upgrade inquiries</div>
                 </div>
                 <div class="card-body">
-                  <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border);">
-                    <div>
-                      <div class="mono-text" style="font-weight: 600;">BL-INV-2026-001</div>
-                      <div style="font-size: 12px; color: var(--text-muted);">01 Nov 2026 • ₹ 11,800</div>
-                    </div>
-                    <button class="btn btn-secondary btn-sm" data-modal="invoice-preview-modal"><i data-lucide="download"></i> PDF</button>
+                  <div id="portal-requests-list">
+                    <!-- Rendered dynamically by portal.js -->
                   </div>
                 </div>
               </div>
@@ -1270,46 +1390,252 @@
           <section id="view-settings" class="view-section">
             <div class="page-header">
               <div class="page-title">
-                <h2>Organization & Billing Settings</h2>
-                <p>Configure company metadata, tax identification, and default invoice prefixes</p>
-              </div>
-              <div class="header-actions">
-                <button class="btn btn-primary"><i data-lucide="save"></i> Save Changes</button>
+                <h2>Account & Workspace Settings</h2>
+                <p>Manage your profile identity, security credentials, notification triggers, and enterprise organization defaults</p>
               </div>
             </div>
 
-            <div class="card">
-              <div class="card-body">
-                <div class="form-row">
-                  <div class="form-group">
-                    <label class="form-label">Company Legal Name</label>
-                    <input type="text" class="form-input" value="Brightloop Software Pvt Ltd" style="width: 100%;" />
+            <!-- Settings Tabs Header -->
+            <div class="settings-tabs-header">
+              <button class="settings-tab-btn active" data-settings-tab="profile">
+                <i data-lucide="user"></i> Profile & Security
+              </button>
+              <button class="settings-tab-btn" data-settings-tab="notifications">
+                <i data-lucide="bell"></i> Notifications
+              </button>
+              <button class="settings-tab-btn" data-settings-tab="org">
+                <i data-lucide="building"></i> Organization & Tax Metadata
+              </button>
+            </div>
+
+            <!-- Tab 1: Profile & Security -->
+            <div id="settings-pane-profile" class="settings-pane active">
+              <div class="grid-2">
+                <!-- Personal Profile Card -->
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title">Personal Profile Details</div>
                   </div>
-                  <div class="form-group">
-                    <label class="form-label">GSTIN / Corporate Tax ID</label>
-                    <input type="text" class="form-input" value="27AABCB1234F1Z9" style="width: 100%;" />
+                  <div class="card-body">
+                    <div class="settings-avatar-block">
+                      <div class="settings-avatar-preview" id="settings-avatar-display">AD</div>
+                      <div>
+                        <div style="font-weight: 600; font-size: 14px;">Profile Avatar</div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Generated automatically from your verified full name</div>
+                      </div>
+                    </div>
+
+                    <form id="settings-profile-form">
+                      <div class="form-row">
+                        <div class="form-group">
+                          <label class="form-label">First Name</label>
+                          <input type="text" id="settings-first-name" class="form-input" required style="width: 100%;" />
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label">Last Name</label>
+                          <input type="text" id="settings-last-name" class="form-input" required style="width: 100%;" />
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" id="settings-email" class="form-input" readonly style="width: 100%; background: var(--bg-page);" />
+                        <span class="form-help">Primary identity associated with your SubscriptIQ account</span>
+                      </div>
+
+                      <div class="form-row">
+                        <div class="form-group">
+                          <label class="form-label">Phone Number</label>
+                          <input type="tel" id="settings-phone" class="form-input" style="width: 100%;" />
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label">Job Title / Role</label>
+                          <input type="text" id="settings-job-title" class="form-input" style="width: 100%;" />
+                        </div>
+                      </div>
+
+                      <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+                        <button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Save Profile</button>
+                      </div>
+                    </form>
                   </div>
                 </div>
 
-                <div class="form-row">
-                  <div class="form-group">
-                    <label class="form-label">Default Invoice Prefix</label>
-                    <input type="text" class="form-input" value="BL-INV-" style="width: 100%;" />
-                    <span class="form-help">Appended before sequential number (e.g. BL-INV-2026-001)</span>
+                <!-- Password & Authentication Security Card -->
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title">Password & Authentication</div>
                   </div>
-                  <div class="form-group">
-                    <label class="form-label">Operating Currency</label>
-                    <select class="form-select" style="width: 100%;">
-                      <option selected>INR (₹) - Indian Rupee</option>
-                      <option>USD ($) - US Dollar</option>
-                      <option>EUR (€) - Euro</option>
-                    </select>
+                  <div class="card-body">
+                    <form id="settings-password-form">
+                      <div class="form-group">
+                        <label class="form-label">Current Password</label>
+                        <input type="password" id="settings-current-password" class="form-input" placeholder="••••••••" style="width: 100%;" />
+                      </div>
+
+                      <div class="form-group">
+                        <label class="form-label">New Password</label>
+                        <input type="password" id="settings-new-password" class="form-input" placeholder="••••••••" style="width: 100%;" />
+                        
+                        <!-- Password Strength Bars -->
+                        <div id="settings-password-strength" class="password-strength-container">
+                          <div class="password-strength-bars">
+                            <div class="password-strength-segment"></div>
+                            <div class="password-strength-segment"></div>
+                            <div class="password-strength-segment"></div>
+                            <div class="password-strength-segment"></div>
+                          </div>
+                          <div class="password-strength-label">
+                            <span>Security Strength</span>
+                            <span>Requirements</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="form-label">Confirm New Password</label>
+                        <input type="password" id="settings-confirm-password" class="form-input" placeholder="••••••••" style="width: 100%;" />
+                      </div>
+
+                      <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+                        <button type="submit" class="btn btn-secondary"><i data-lucide="key"></i> Update Password</button>
+                      </div>
+                    </form>
+
+                    <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
+                      <div class="switch-control">
+                        <div class="switch-control-info">
+                          <span class="switch-control-title">Two-Factor Authentication (2FA)</span>
+                          <span class="switch-control-desc">Require one-time TOTP code from Google Authenticator on login</span>
+                        </div>
+                        <label class="switch-toggle">
+                          <input type="checkbox" checked />
+                          <span class="switch-slider"></span>
+                        </label>
+                      </div>
+                    </div>
                   </div>
                 </div>
+              </div>
+            </div>
 
-                <div class="form-group">
-                  <label class="form-label">Registered Office Address</label>
-                  <input type="text" class="form-input" value="Brightloop Tech Park, Bengaluru, Karnataka, India" style="width: 100%;" />
+            <!-- Tab 2: Notification Preferences -->
+            <div id="settings-pane-notifications" class="settings-pane">
+              <div class="card" style="max-width: 680px;">
+                <div class="card-header">
+                  <div class="card-title">Real-Time Alerts & Notification Triggers</div>
+                  <div class="card-subtitle">Choose which operational and billing triggers send dispatch notices</div>
+                </div>
+                <div class="card-body">
+                  <form id="settings-notifications-form">
+                    <div class="switch-control">
+                      <div class="switch-control-info">
+                        <span class="switch-control-title">Invoice Generation & Recurring Billing</span>
+                        <span class="switch-control-desc">Dispatch PDF tax invoices immediately upon recurring cycle generation</span>
+                      </div>
+                      <label class="switch-toggle">
+                        <input type="checkbox" checked />
+                        <span class="switch-slider"></span>
+                      </label>
+                    </div>
+
+                    <div class="switch-control">
+                      <div class="switch-control-info">
+                        <span class="switch-control-title">Payment Reconciliation Alerts</span>
+                        <span class="switch-control-desc">Notify upon successful match of UPI/NEFT/Card receipts against open balances</span>
+                      </div>
+                      <label class="switch-toggle">
+                        <input type="checkbox" checked />
+                        <span class="switch-slider"></span>
+                      </label>
+                    </div>
+
+                    <div class="switch-control">
+                      <div class="switch-control-info">
+                        <span class="switch-control-title">Subscription Renewal Notices</span>
+                        <span class="switch-control-desc">Alert customers 7 days prior to their contract renewal date</span>
+                      </div>
+                      <label class="switch-toggle">
+                        <input type="checkbox" checked />
+                        <span class="switch-slider"></span>
+                      </label>
+                    </div>
+
+                    <div class="switch-control">
+                      <div class="switch-control-info">
+                        <span class="switch-control-title">Revenue Leakage Sentinel Warnings</span>
+                        <span class="switch-control-desc">Immediate alerts for unbilled renewals or expired promo redemptions</span>
+                      </div>
+                      <label class="switch-toggle">
+                        <input type="checkbox" checked />
+                        <span class="switch-slider"></span>
+                      </label>
+                    </div>
+
+                    <div class="switch-control">
+                      <div class="switch-control-info">
+                        <span class="switch-control-title">Weekly Executive Summary Digest</span>
+                        <span class="switch-control-desc">Receive consolidated MRR waterfall and collection velocity reports every Monday</span>
+                      </div>
+                      <label class="switch-toggle">
+                        <input type="checkbox" checked />
+                        <span class="switch-slider"></span>
+                      </label>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                      <button type="submit" class="btn btn-primary"><i data-lucide="check"></i> Save Preferences</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 3: Organization Settings (Admin / Staff) -->
+            <div id="settings-pane-org" class="settings-pane">
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">Organization & Corporate Tax Configuration</div>
+                  <div class="card-subtitle">Global company metadata, tax identification, and default invoice nomenclature</div>
+                </div>
+                <div class="card-body">
+                  <form id="settings-org-form">
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">Company Legal Name</label>
+                        <input type="text" class="form-input" placeholder="e.g. Acme Enterprises Ltd" style="width: 100%;" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">GSTIN / Corporate Tax ID</label>
+                        <input type="text" class="form-input" placeholder="e.g. 27AABCB1234F1Z9" style="width: 100%;" />
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">Default Invoice Prefix</label>
+                        <input type="text" class="form-input" placeholder="e.g. INV-" style="width: 100%;" />
+                        <span class="form-help">Appended before sequential numbers (e.g. INV-2026-001)</span>
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Operating Currency</label>
+                        <select class="form-select" style="width: 100%;">
+                          <option selected>INR (&#8377;) - Indian Rupee</option>
+                          <option>USD ($) - US Dollar</option>
+                          <option>EUR (&euro;) - Euro</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Registered Office Address</label>
+                      <input type="text" class="form-input" placeholder="Registered office address" style="width: 100%;" />
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+                      <button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Save Organization Changes</button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -1318,48 +1644,275 @@
       </div>
     </div>
 
-    <!-- Split-Screen Auth View (Login / Register / Forgot Password) -->
+    <!-- =====================================================================
+         AUTHENTICATION SPLIT-SCREEN EXPERIENCE (Login / Register / Forgot / Reset)
+         ===================================================================== -->
     <div id="view-auth" class="auth-page">
+      <!-- Left Hero Banner -->
       <div class="auth-hero">
         <div class="auth-hero-header">
           <div class="brand-icon">B</div>
-          <span style="font-size: 16px; font-weight: 700; letter-spacing: -0.2px;">Brightloop Software</span>
+          <div>
+            <div class="brand-title">SubscriptIQ</div>
+          </div>
+          <span class="brand-tag">Odoo Hackathon Edition</span>
         </div>
+
         <div class="auth-hero-content">
-          <h2>Subscription Operations. Simplified. Revenue Intelligence. Amplified.</h2>
-          <p>Enterprise subscription billing, dynamic variant configuration and revenue leakage protection built for modern B2B SaaS.</p>
+          <h2>Enterprise Subscription & Revenue Operations Platform</h2>
+          <p>
+            Automate recurring billing schedules, dynamic attribute pricing, dual-GST tax compliance, and revenue leakage detection with mathematical precision.
+          </p>
+
+          <!-- Subscription Revenue Visual -->
+          <div class="auth-revenue-visual">
+            <div class="auth-revenue-metric-header">
+              <span class="auth-revenue-metric-title">Monthly Recurring Revenue (MRR)</span>
+              <span class="auth-revenue-metric-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                +14.2% MoM
+              </span>
+            </div>
+            <div class="auth-revenue-amount">&#8377; 2,45,000.00</div>
+            <div class="auth-revenue-subtext">
+              <span>&#9679; Active Subscriptions: <strong>142</strong></span>
+              <span>&#9679; Dual-GST Reconciled: <strong>100%</strong></span>
+            </div>
+          </div>
+
+          <div class="auth-hero-features">
+            <div class="auth-hero-feature-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Dynamic Variant Pricing: Base Price + Attribute Surcharges</span>
+            </div>
+            <div class="auth-hero-feature-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Automated Dual-GST (CGST 9% + SGST 9%) Recurring Invoicing</span>
+            </div>
+            <div class="auth-hero-feature-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Stripe-Inspired Subscriber Self-Service Portal & RBAC</span>
+            </div>
+          </div>
         </div>
-        <div style="font-size: 12px; color: #8898aa;">
-          &copy; 2026 Brightloop Software. Odoo Hackathon Edition.
+
+        <div style="font-size: 11px; color: #8898aa; z-index: 1;">
+          &copy; 2026 SubscriptIQ / Brightloop Software. Pure Frontend Architecture.
         </div>
       </div>
 
+      <!-- Right Form Wrapper -->
       <div class="auth-form-wrapper">
         <div class="auth-card">
-          <h3>Sign in to Brightloop</h3>
-          <p class="subtitle">Access your subscription dashboard and financial operations</p>
-
-          <form id="auth-login-form" onsubmit="event.preventDefault(); document.getElementById('view-auth').classList.remove('active'); document.getElementById('app').style.display='flex';">
-            <div class="form-group">
-              <label class="form-label">Work Email</label>
-              <input type="email" class="form-input" placeholder="name@company.com" required style="width: 100%;" />
+          <!-- SUBVIEW 1: LOGIN -->
+          <div id="auth-subview-login" class="auth-subview active">
+            <div class="auth-card-header">
+              <h3>Sign in to SubscriptIQ</h3>
+              <p>Access your subscription dashboard and financial operations</p>
             </div>
 
-            <div class="form-group">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <label class="form-label" style="margin-bottom: 0;">Password</label>
-                <a href="#" style="font-size: 12px; color: var(--primary); text-decoration: none;">Forgot password?</a>
+            <div id="login-error-alert" class="auth-alert auth-alert-error"></div>
+
+            <form id="auth-login-form">
+              <div class="form-group">
+                <label class="form-label">Work Email</label>
+                <input type="email" id="login-email" class="form-input" placeholder="name@company.com" required style="width: 100%;" />
               </div>
-              <input type="password" class="form-input" placeholder="••••••••" required style="width: 100%;" />
+
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <label class="form-label" style="margin-bottom: 0;">Password</label>
+                  <a href="#" data-auth-target="forgot" style="font-size: 12px; color: var(--primary); text-decoration: none; font-weight: 500;">Forgot password?</a>
+                </div>
+                <div class="password-input-wrapper">
+                  <input type="password" id="login-password" class="form-input" placeholder="••••••••" required />
+                  <button type="button" class="password-toggle-btn" title="Toggle password visibility">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div style="display: flex; align-items: center; justify-content: space-between; margin: 14px 0 20px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); cursor: pointer;">
+                  <input type="checkbox" id="login-remember" checked />
+                  <span>Remember this device for 30 days</span>
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px; font-size: 14px;">
+                Sign In
+              </button>
+            </form>
+
+            <div style="margin-top: 24px; text-align: center; font-size: 13px; color: var(--text-secondary);">
+              Don't have an enterprise workspace? <a href="#" data-auth-target="register" style="color: var(--primary); text-decoration: none; font-weight: 600;">Register company</a>
+            </div>
+          </div>
+
+          <!-- SUBVIEW 2: REGISTRATION -->
+          <div id="auth-subview-register" class="auth-subview">
+            <div class="auth-card-header">
+              <h3>Register Enterprise Account</h3>
+              <p>Create your organization profile and revenue ops tenant</p>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 10px;">
-              Sign In
-            </button>
-          </form>
+            <div id="reg-error-alert" class="auth-alert auth-alert-error"></div>
 
-          <div style="margin-top: 24px; text-align: center; font-size: 13px; color: var(--text-secondary);">
-            Don't have an account? <a href="#" style="color: var(--primary); text-decoration: none; font-weight: 500;">Register company</a>
+            <form id="auth-register-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Full Name</label>
+                  <input type="text" id="reg-name" class="form-input" placeholder="e.g. John Doe" required style="width: 100%;" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Company Legal Name</label>
+                  <input type="text" id="reg-company" class="form-input" placeholder="e.g. Acme Corp Ltd" required style="width: 100%;" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Work Email</label>
+                <input type="email" id="reg-email" class="form-input" placeholder="name@company.com" required style="width: 100%;" />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Password</label>
+                <div class="password-input-wrapper">
+                  <input type="password" id="reg-password" class="form-input" placeholder="Minimum 9 characters" required />
+                  <button type="button" class="password-toggle-btn" title="Toggle password visibility">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+
+                <!-- Password Strength Container -->
+                <div id="reg-password-strength" class="password-strength-container">
+                  <div class="password-strength-bars">
+                    <div class="password-strength-segment"></div>
+                    <div class="password-strength-segment"></div>
+                    <div class="password-strength-segment"></div>
+                    <div class="password-strength-segment"></div>
+                  </div>
+                  <div class="password-strength-label">
+                    <span>Password Strength</span>
+                    <span>Requirements</span>
+                  </div>
+                  <div class="password-strength-rules">
+                    <div class="password-rule-item invalid" data-rule="length">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+                      <span>Min 9 chars</span>
+                    </div>
+                    <div class="password-rule-item invalid" data-rule="uppercase">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+                      <span>1 uppercase</span>
+                    </div>
+                    <div class="password-rule-item invalid" data-rule="lowercase">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+                      <span>1 lowercase</span>
+                    </div>
+                    <div class="password-rule-item invalid" data-rule="special">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+                      <span>1 special char</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Confirm Password</label>
+                <div class="password-input-wrapper">
+                  <input type="password" id="reg-confirm-password" class="form-input" placeholder="Repeat password" required />
+                  <button type="button" class="password-toggle-btn" title="Toggle password visibility">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px; font-size: 14px; margin-top: 14px;">
+                Create Account
+              </button>
+            </form>
+
+            <div style="margin-top: 24px; text-align: center; font-size: 13px; color: var(--text-secondary);">
+              Already have an account? <a href="#" data-auth-target="login" style="color: var(--primary); text-decoration: none; font-weight: 600;">Sign in</a>
+            </div>
+          </div>
+
+          <!-- SUBVIEW 3: FORGOT PASSWORD -->
+          <div id="auth-subview-forgot" class="auth-subview">
+            <div class="auth-card-header">
+              <h3>Reset Your Password</h3>
+              <p>Enter your registered email address and we'll send a password recovery token</p>
+            </div>
+
+            <div id="forgot-success-alert" class="auth-alert auth-alert-success"></div>
+
+            <form id="auth-forgot-form">
+              <div class="form-group">
+                <label class="form-label">Registered Work Email</label>
+                <input type="email" id="forgot-email" class="form-input" placeholder="name@company.com" required style="width: 100%;" />
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px; font-size: 14px; margin-top: 10px;">
+                Send Reset Link
+              </button>
+            </form>
+
+            <div style="margin-top: 24px; text-align: center; font-size: 13px;">
+              <a href="#" data-auth-target="login" style="color: var(--primary); text-decoration: none; font-weight: 500;">&larr; Back to sign in</a>
+            </div>
+          </div>
+
+          <!-- SUBVIEW 4: RESET PASSWORD -->
+          <div id="auth-subview-reset" class="auth-subview">
+            <div class="auth-card-header">
+              <h3>Create New Password</h3>
+              <p>Set a new password for your SubscriptIQ account</p>
+            </div>
+
+            <div id="reset-error-alert" class="auth-alert auth-alert-error"></div>
+
+            <form id="auth-reset-form">
+              <div class="form-group">
+                <label class="form-label">New Password</label>
+                <div class="password-input-wrapper">
+                  <input type="password" id="reset-password-input" class="form-input" placeholder="Minimum 9 characters" required />
+                  <button type="button" class="password-toggle-btn" title="Toggle visibility">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+
+                <div id="reset-password-strength" class="password-strength-container">
+                  <div class="password-strength-bars">
+                    <div class="password-strength-segment"></div>
+                    <div class="password-strength-segment"></div>
+                    <div class="password-strength-segment"></div>
+                    <div class="password-strength-segment"></div>
+                  </div>
+                  <div class="password-strength-label">
+                    <span>Password Strength</span>
+                    <span>Requirements</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Confirm New Password</label>
+                <div class="password-input-wrapper">
+                  <input type="password" id="reset-confirm-input" class="form-input" placeholder="Confirm password" required />
+                  <button type="button" class="password-toggle-btn" title="Toggle visibility">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px; font-size: 14px; margin-top: 10px;">
+                Update Password
+              </button>
+            </form>
+
+            <div style="margin-top: 24px; text-align: center; font-size: 13px;">
+              <a href="#" data-auth-target="login" style="color: var(--primary); text-decoration: none; font-weight: 500;">&larr; Back to sign in</a>
+            </div>
           </div>
         </div>
       </div>
@@ -1657,7 +2210,316 @@
       </div>
     </div>
 
-    <!-- Application Script -->
+    <!-- =====================================================================
+         MODULE 05 MODALS & DRAWERS (Staff, Customer Portal, RBAC)
+         ===================================================================== -->
+
+    <!-- Add / Invite Staff Member Modal -->
+    <div id="add-staff-modal" class="modal-overlay">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title">Invite New Team Member</div>
+          <button class="modal-close" data-close-modal>&times;</button>
+        </div>
+        <form id="add-staff-form">
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" id="add-staff-name" class="form-input" placeholder="e.g. Vikram Seth" required style="width: 100%;" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Work Email</label>
+                <input type="email" id="add-staff-email" class="form-input" placeholder="name@brightloop.io" required style="width: 100%;" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" id="add-staff-phone" class="form-input" placeholder="+91 98000 00000" style="width: 100%;" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Assigned Role</label>
+                <select id="add-staff-role" class="form-select" style="width: 100%;">
+                  <option value="STAFF" selected>STAFF (Operations & Billing)</option>
+                  <option value="ADMIN">ADMIN (Full Super Admin Privileges)</option>
+                </select>
+                <span class="form-help">Enforces frontend RBAC access restrictions</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Department</label>
+                <select id="add-staff-dept" class="form-select" style="width: 100%;">
+                  <option value="Finance & Billing">Finance & Billing</option>
+                  <option value="Operations" selected>Operations</option>
+                  <option value="Customer Success">Customer Success</option>
+                  <option value="Engineering Ops">Engineering Ops</option>
+                  <option value="RevOps & Audit">RevOps & Audit</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="info-banner" style="margin-top: 10px; margin-bottom: 0;">
+              <strong>Provisioning Notice:</strong> An invitation token and temporary login credential will be securely dispatched to the provided email.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+            <button type="submit" class="btn btn-primary">Dispatch Invitation</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Edit Staff Member Modal -->
+    <div id="edit-staff-modal" class="modal-overlay">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title">Edit Team Member Permissions</div>
+          <button class="modal-close" data-close-modal>&times;</button>
+        </div>
+        <form id="edit-staff-form">
+          <div class="modal-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Staff Name</label>
+                <input type="text" id="edit-staff-name" class="form-input" readonly style="width: 100%; background: var(--bg-page);" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" id="edit-staff-email" class="form-input" readonly style="width: 100%; background: var(--bg-page);" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Assigned Role</label>
+                <select id="edit-staff-role" class="form-select" style="width: 100%;">
+                  <option value="ADMIN">ADMIN (Super Admin)</option>
+                  <option value="STAFF">STAFF (Billing & Operations)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Department</label>
+                <select id="edit-staff-dept" class="form-select" style="width: 100%;">
+                  <option value="Operations">Operations</option>
+                  <option value="Finance & Billing">Finance & Billing</option>
+                  <option value="Customer Success">Customer Success</option>
+                  <option value="Engineering Ops">Engineering Ops</option>
+                  <option value="RevOps & Audit">RevOps & Audit</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Account Status</label>
+              <select id="edit-staff-status" class="form-select" style="width: 100%;">
+                <option value="Active">Active (Granted Access)</option>
+                <option value="Inactive">Inactive (Suspended)</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Staff Audit Trail Drawer -->
+    <div id="staff-audit-drawer-overlay" class="drawer-overlay" data-close-drawer></div>
+    <div id="staff-audit-drawer" class="drawer-panel">
+      <div class="drawer-header">
+        <div>
+          <div style="font-size: 15px; font-weight: 600;" id="audit-drawer-name">Staff Member Activity</div>
+          <div style="font-size: 12px; color: var(--text-muted);" id="audit-drawer-role">Audit Trail & Session Telemetry</div>
+        </div>
+        <button class="modal-close" data-close-drawer>&times;</button>
+      </div>
+      <div class="drawer-body">
+        <div class="info-banner" style="margin-bottom: 20px;">
+          <strong>Immutable Audit Trail:</strong> Timestamped record of administrative events, login sessions, and financial actions.
+        </div>
+
+        <div class="staff-audit-timeline" id="audit-drawer-timeline">
+          <!-- Populated by staff.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Customer Early Renewal Modal -->
+    <div id="portal-renew-modal" class="modal-overlay">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title">Confirm Early Subscription Renewal</div>
+          <button class="modal-close" data-close-modal>&times;</button>
+        </div>
+        <form id="portal-renew-form">
+          <div class="modal-body">
+            <div class="info-banner" style="margin-bottom: 16px;">
+              Extend your subscription cycle early to lock in your discounted tier and guarantee uninterrupted platform operations.
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Plan Name</label>
+              <div style="font-size: 15px; font-weight: 600;" id="renew-modal-plan-name">Brightloop Enterprise Cloud</div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Current Renewal Date</label>
+                <div class="mono-text" id="renew-modal-next-date">15 Nov 2026</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Recurring Amount</label>
+                <div class="mono-text" style="font-weight: 700; color: var(--primary);" id="renew-modal-amount">&#8377; 18,500</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Extension Period</label>
+              <select class="form-select" style="width: 100%;">
+                <option value="1">1 Billing Cycle (Adds 30 days &bull; &#8377; 18,500)</option>
+                <option value="12">12 Months (Annual Commitment &bull; 10% Discount applied)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Payment Authorization Method</label>
+              <select class="form-select" style="width: 100%;">
+                <option>HDFC Corporate NetBanking (Account **8912)</option>
+                <option>Visa Corporate ending in 4242</option>
+                <option>Auto-Debit Mandate (UPI e-Mandate)</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+            <button type="submit" class="btn btn-primary"><i data-lucide="check"></i> Confirm Early Renewal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Customer Pause Subscription Modal -->
+    <div id="portal-pause-modal" class="modal-overlay">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title">Request Subscription Pause</div>
+          <button class="modal-close" data-close-modal>&times;</button>
+        </div>
+        <form id="portal-pause-form">
+          <div class="modal-body">
+            <div class="warning-banner" style="margin-bottom: 16px;">
+              Pausing will temporarily suspend automated recurring billing while preserving all your database configurations and historical invoices intact.
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Subscription</label>
+              <div style="font-weight: 600;" id="pause-modal-plan-name">Brightloop Enterprise Cloud</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Pause Duration</label>
+              <select id="pause-duration-select" class="form-select" style="width: 100%;">
+                <option value="15 days">15 Days (Short maintenance pause)</option>
+                <option value="30 days" selected>30 Days (Standard 1-month hiatus)</option>
+                <option value="60 days">60 Days (Quarterly suspension)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Reason for Pause (Optional)</label>
+              <textarea id="pause-reason-input" class="form-input" rows="3" placeholder="Tell us why you're pausing (e.g. seasonal maintenance, internal restructuring)..." style="width: 100%; font-family: inherit;"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-close-modal>Keep Active</button>
+            <button type="submit" class="btn btn-primary">Submit Pause Request</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Customer Cancellation Modal -->
+    <div id="portal-cancel-modal" class="modal-overlay">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title" style="color: var(--danger);">Request Subscription Cancellation</div>
+          <button class="modal-close" data-close-modal>&times;</button>
+        </div>
+        <form id="portal-cancel-form">
+          <div class="modal-body">
+            <div class="danger-banner" style="margin-bottom: 16px;">
+              <strong>Important Notice:</strong> Cancelling will disable automated recurring renewals. Your access will remain active until the end of your prepaid period.
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Target Plan</label>
+              <div style="font-weight: 600;" id="cancel-modal-plan-name">Brightloop Enterprise Cloud</div>
+            </div>
+
+            <!-- Retention Offer -->
+            <div style="background: #f4f3ff; border: 1px dashed var(--primary); border-radius: var(--radius-md); padding: 14px; margin-bottom: 16px;">
+              <div style="font-weight: 600; color: var(--primary); font-size: 13px;">Special Retention Discount Available</div>
+              <p style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">
+                Before you go, would a 20% discount on your next 3 billing cycles help keep your operations automated?
+              </p>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Please tell us why you are leaving</label>
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
+                <label style="font-size: 13px; display: flex; align-items: center; gap: 8px;">
+                  <input type="radio" name="cancel_reason" value="Too expensive" checked />
+                  <span>Cost or budget restructuring</span>
+                </label>
+                <label style="font-size: 13px; display: flex; align-items: center; gap: 8px;">
+                  <input type="radio" name="cancel_reason" value="Missing features" />
+                  <span>Missing required features or integrations</span>
+                </label>
+                <label style="font-size: 13px; display: flex; align-items: center; gap: 8px;">
+                  <input type="radio" name="cancel_reason" value="Project completed" />
+                  <span>Project or operational requirement completed</span>
+                </label>
+                <label style="font-size: 13px; display: flex; align-items: center; gap: 8px;">
+                  <input type="radio" name="cancel_reason" value="Other" />
+                  <span>Other / Temporary hiatus</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 14px;">
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-secondary);">
+                <input type="checkbox" required />
+                <span>I understand that auto-renewal will be terminated at the end of the billing period.</span>
+              </label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-close-modal>Keep Subscription</button>
+            <button type="submit" class="btn btn-danger">Confirm Cancellation</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Customer Subscription Detail Drawer -->
+    <div id="portal-sub-detail-drawer-overlay" class="drawer-overlay" data-close-drawer></div>
+    <div id="portal-sub-detail-drawer" class="drawer-panel">
+      <div class="drawer-header">
+        <div>
+          <div style="font-size: 15px; font-weight: 600;" id="portal-drawer-sub-title">Subscription Overview</div>
+          <div class="mono-text" style="font-size: 12px; color: var(--text-muted);" id="portal-drawer-sub-id">SUB-2026-001</div>
+        </div>
+        <button class="modal-close" data-close-drawer>&times;</button>
+      </div>
+      <div class="drawer-body" id="portal-drawer-sub-content">
+        <!-- Rendered dynamically by portal.js -->
+      </div>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

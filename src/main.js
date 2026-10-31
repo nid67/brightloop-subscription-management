@@ -1,7 +1,21 @@
 import { createIcons, icons } from 'lucide';
 import Chart from 'chart.js/auto';
 
+// Module 05: Authentication, RBAC, Customer Portal, Staff & Settings
+import { initRBAC } from './modules/rbac.js';
+import { initAuth } from './modules/auth.js';
+import { initStaff } from './modules/staff.js';
+import { initPortal } from './modules/portal.js';
+import { initSettings } from './modules/settings.js';
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize Module 05 subsystems
+  initRBAC();
+  initAuth();
+  initStaff();
+  initPortal();
+  initSettings();
+
   // Initialize Lucide icons
   createIcons({ icons });
 
