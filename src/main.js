@@ -1,5 +1,4 @@
 import { createIcons, icons } from 'lucide';
-import Chart from 'chart.js/auto';
 
 // Module 05: Authentication, RBAC, Customer Portal, Staff & Settings
 import { initRBAC } from './modules/rbac.js';
@@ -8,6 +7,14 @@ import { initStaff } from './modules/staff.js';
 import { initPortal } from './modules/portal.js';
 import { initSettings } from './modules/settings.js';
 
+// Module 06: Dashboard, Analytics, Intelligence & AI Assistant
+import { initDashboard }    from './modules/dashboard.js';
+import { initAnalytics }    from './modules/analytics.js';
+import { initLeakage }      from './modules/leakage.js';
+import { initHealth }       from './modules/health.js';
+import { initReports }      from './modules/reports.js';
+import { initAIAssistant }  from './modules/ai-assistant.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize Module 05 subsystems
   initRBAC();
@@ -15,6 +22,14 @@ document.addEventListener('DOMContentLoaded', () => {
   initStaff();
   initPortal();
   initSettings();
+
+  // Initialize Module 06 subsystems
+  initDashboard();
+  initAnalytics();
+  initLeakage();
+  initHealth();
+  initReports();
+  initAIAssistant();
 
   // Initialize Lucide icons
   createIcons({ icons });
@@ -133,126 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Dashboard Chart Initialization
-  const dashboardCanvas = document.getElementById('dashboardRevenueChart');
-  if (dashboardCanvas) {
-    new Chart(dashboardCanvas, {
-      type: 'line',
-      data: {
-        labels: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
-        datasets: [
-          {
-            label: 'Recognized MRR (₹)',
-            data: [142000, 168000, 185000, 210000, 228000, 245000],
-            borderColor: '#635bff',
-            backgroundColor: 'rgba(99, 91, 255, 0.08)',
-            fill: true,
-            tension: 0.35,
-            borderWidth: 2,
-            pointRadius: 4,
-            pointBackgroundColor: '#635bff'
-          },
-          {
-            label: 'Target (₹)',
-            data: [140000, 160000, 180000, 200000, 220000, 240000],
-            borderColor: '#adbdcc',
-            borderDash: [5, 5],
-            fill: false,
-            tension: 0.35,
-            borderWidth: 1.5,
-            pointRadius: 0
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'top',
-            labels: {
-              font: { family: 'Inter', size: 12 },
-              color: '#425466',
-              usePointStyle: true,
-              boxWidth: 8
-            }
-          }
-        },
-        scales: {
-          x: {
-            grid: { display: false },
-            ticks: { font: { family: 'Inter', size: 11 }, color: '#8898aa' }
-          },
-          y: {
-            grid: { color: '#f0f2f5' },
-            ticks: {
-              font: { family: 'Inter', size: 11 },
-              color: '#8898aa',
-              callback: value => '₹ ' + (value / 1000) + 'k'
-            }
-          }
-        }
-      }
-    });
-  }
-
-  // Analytics Waterfall Chart Initialization
-  const analyticsCanvas = document.getElementById('analyticsChart');
-  if (analyticsCanvas) {
-    new Chart(analyticsCanvas, {
-      type: 'bar',
-      data: {
-        labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
-        datasets: [
-          {
-            label: 'New Bookings',
-            data: [35000, 42000, 48000, 52000, 58000, 64000],
-            backgroundColor: '#635bff',
-            borderRadius: 4
-          },
-          {
-            label: 'Upgrades / Add-ons',
-            data: [12000, 15000, 14000, 18000, 22000, 24000],
-            backgroundColor: '#00d4ff',
-            borderRadius: 4
-          },
-          {
-            label: 'Churn Impact',
-            data: [-4000, -3200, -5000, -2800, -3500, -4100],
-            backgroundColor: '#df1b41',
-            borderRadius: 4
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'top',
-            labels: {
-              font: { family: 'Inter', size: 12 },
-              color: '#425466',
-              usePointStyle: true,
-              boxWidth: 8
-            }
-          }
-        },
-        scales: {
-          x: {
-            grid: { display: false },
-            ticks: { font: { family: 'Inter', size: 11 }, color: '#8898aa' }
-          },
-          y: {
-            grid: { color: '#f0f2f5' },
-            ticks: {
-              font: { family: 'Inter', size: 11 },
-              color: '#8898aa',
-              callback: val => '₹ ' + (val / 1000) + 'k'
-            }
-          }
-        }
-      }
-    });
-  }
+  // Module 06 handles all dashboard and analytics chart rendering
+  // via initDashboard() and initAnalytics() above.
 });
