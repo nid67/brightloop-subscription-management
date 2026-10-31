@@ -1,9 +1,23 @@
 import { createIcons, icons } from 'lucide';
 import Chart from 'chart.js/auto';
+import { initBillingInvoicesTaxModule } from './modules/billing-invoices-tax/index.js';
+import './modules/billing-invoices-tax/module.css';
+import { initPaymentsDiscountsModule } from './modules/payments-discounts/index.js';
+import './modules/payments-discounts/module.css';
+
+window.lucide = {
+  createIcons: () => createIcons({ icons })
+};
 
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize Lucide icons
   createIcons({ icons });
+
+  // Initialize Module 03 (Recurring Billing, Invoices & Tax Management)
+  initBillingInvoicesTaxModule();
+
+  // Initialize Module 04 (Payment & Discount Management)
+  initPaymentsDiscountsModule();
 
   // Navigation / View Switching
   const navLinks = document.querySelectorAll('.nav-link[data-view]');
